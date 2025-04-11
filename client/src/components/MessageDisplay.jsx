@@ -1,6 +1,6 @@
 import React from "react";
 import { useWeb3Context } from "../contexts/Web3Context";
-import LoadingSpinner from "./LoadingSpinnder";
+import LoadingSpinner from "./LoadingSpinner";
 
 const MessageDisplay = ({ specificError, specificLoading }) => {
     const { isLoading: contextLoading, error: contextError, clearError } = useWeb3Context();
@@ -8,7 +8,7 @@ const MessageDisplay = ({ specificError, specificLoading }) => {
     const isLoading = specificLoading !== undefined ? specificLoading : contextLoading;
     const error = specificError !== undefined ? specificError : contextError;
 
-    const handelClearError = () => {
+    const handleClearError = () => {
         if (!specificError && clearError) {
             clearError();
         }

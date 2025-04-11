@@ -10,13 +10,13 @@ const StakingInterface = ({ mode }) => {
     const [amount, setAmount] = useState('');
     const [tokenBalance, setTokenBalance] = useState('0');
     const [allowance, setAllowance] = useState('0');
-    const [stakedBalance, setStakedBalance] = useState('0');
+    const [stakedBalance_, setStakedBalance] = useState('0');
     const [unstakeInfo, setUnstakeInfo] = useState({ amount: '0', unlockTime: '0' });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [localError, setLocalError] = useState('');
     const [tokenSymbol, setTokenSymbol] = useState('');
 
-    const clearLocalError = () => setLocalError('');
+    const clearLocalError = useCallback(() => setLocalError(''), []);
 
     const toWei = (val) => web3 ? web3.utils.toWei(val?.toString() || '0', 'ether') : '0';
     const fromWei = (val) => web3 ? web3.utils.fromWei(val?.toString() || '0', 'ether') : '0';
@@ -30,17 +30,18 @@ const StakingInterface = ({ mode }) => {
     };
 
     const fetchData = useCallback(async () => {
-        if (!account || !tokenContract || !stakingContract || !web3) return;
+        if (!account || !tokenContract || !stakingContract || !web3) {
+            return;
+        }
 
         try {
             const [bal, allow, staked, info, symbol] = await Promise.all([
                 tokenContract.methods.balanceOf(account).call(),
                 tokenContract.methods.allowance(account, stakingContract.options.address).call(),
                 stakingContract.methods.stakedBalance(account).call(),
-                stakingContract.methods.getUnstakeRequest(account).call(),
+                stakingContract.methods.getUnstakedRequest(account).call(),
                 tokenContract.methods.symbol().call(),
             ]);
-
             setTokenBalance(bal?.toString() ?? '0');
             setAllowance(allow?.toString() ?? '0' );
             setStakedBalance(staked?.toString() ?? '0');
@@ -48,15 +49,24 @@ const StakingInterface = ({ mode }) => {
                 amount: info?.amount?.toString() ?? '0',
                 unlockTime: info?.unlockTime?.toString() ?? '0'
             });
-
-            setTokenSymbol(symbol?.toString() ?? '${tokenSymbol}');
+            setTokenSymbol(symbol?.toString() ?? `${tokenSymbol}`);
 
             clearLocalError();
-        } catch (error) {
-            console.error("Error fetching staking data:", err);
-            setLocalError("Failed to fetch staking details. Please refresh.");
+
+        } catch (fetchError) {
+            console.error("Error fetching staking data:");
+            let errorMsg = "Failed to fetch staking details. Please refresh.";
+            if (fetchError instanceof Error && fetchError.message) {
+                 // Include the message from standard Error objects
+                errorMsg = `Failed to fetch staking details: ${fetchError.message}`;
+            } else if (typeof fetchError === 'string') {
+                // Handle cases where a plain string might be thrown/rejected
+                errorMsg = `Failed to fetch staking details: ${fetchError}`;
+            } // Add more specific checks if needed based on web3 errors
+
+            setLocalError(errorMsg);
         }
-    }, [account, tokenContract, stakingContract, web3]);
+    }, [account, clearLocalError, tokenContract, stakingContract, web3, tokenSymbol]);
 
     useEffect(() => {
         fetchData();
@@ -143,7 +153,7 @@ const StakingInterface = ({ mode }) => {
         if (!amount || parseFloat(amount) <= 0) { setLocalError("Enter valid amount."); return; }
         if (!stakingContract) { setLocalError("Staking contract not loaded."); return; }
         const weiAmount = toWei(amount);
-        if (BigInt(stakedBalance) < BigInt(weiAmount)) { setLocalError("Insufficient staked balance."); return; }
+        if (BigInt(stakedBalance_) < BigInt(weiAmount)) { setLocalError("Insufficient staked balance."); return; }
         if (unstakeInfo.amount !== '0') { setLocalError("Unstake already pending."); return; }
 
         sendTransaction(
@@ -176,7 +186,7 @@ const StakingInterface = ({ mode }) => {
             {localError && <MessageDisplay specificError={localError} />}
 
             <p>Token Balance: {fromWei(tokenBalance)} {tokenSymbol}</p>
-            <p>Staked Balance: {fromWei(stakedBalance)} {tokenSymbol}</p>
+            <p>Staked Balance: {fromWei(stakedBalance_)} {tokenSymbol}</p>
 
             {mode === 'stake' && (
                 <>

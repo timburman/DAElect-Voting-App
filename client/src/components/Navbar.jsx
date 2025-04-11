@@ -8,7 +8,13 @@ const Navbar = () => {
 
     const formatAddress = (addr) => {
         if (!addr) return '';
-        return `<span class="math-inline">\{addr\.substring\(0, 6\)\}\.\.\.</span>{addr.substring(addr.length - 4)}`;
+        
+        return (
+            <span className="math-inline">
+                {addr.substring(0, 6)}
+            </span>
+            // {addr.substring(addr.length - 4)}
+        );
     }
 
     return (

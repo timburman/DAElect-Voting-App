@@ -10,6 +10,8 @@ const ProposalDetailPage = () => {
     const navigate = useNavigate();
     const { web3, account, votingContract, isConnected, networkId, targetNetworkId, setLoading, setError, clearError, isOwner } = useWeb3Context(); // Added isOwner
 
+    console.log('isOwner:', isOwner);
+
     const [proposalData, setProposalData] = useState(null); // Blockchain data
     const [detailsText, setDetailsText] = useState(''); // Off-chain data
     const [isLoadingBc, setIsLoadingBc] = useState(false); // Loading blockchain data
@@ -52,7 +54,6 @@ const ProposalDetailPage = () => {
                 id: data.id.toString(),
                 proposer: data.proposer,
                 description: data.description,
-                creationTime: data.creationTime.toString(),
                 startTime: data.startTime.toString(),
                 endTime: data.endTime.toString(),
                 forVotes: data.forVotes.toString(),
@@ -106,7 +107,7 @@ const ProposalDetailPage = () => {
          setError(''); // Clear global error
          setPageError('');
         try {
-             await votingContract.methods.castVote(proposalId, voteType)
+             await votingContract.methods.casteVote(proposalId, voteType)
                 .send({ from: account })
                 .on('receipt', () => {
                     setLoading(false);

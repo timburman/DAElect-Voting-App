@@ -50,8 +50,8 @@ export const Web3Provider = ({children}) => {
                         const voting = new web3Instance.eth.Contract(contracts.voting.abi, contracts.voting.address);
 
                         setTokenContractInstance(token);
-                        setStakingContractInstance(token);
-                        setVotingContractInstance(token);
+                        setStakingContractInstance(staking);
+                        setVotingContractInstance(voting);
 
                         console.log("Wallet Connected: ",currentAccount);
                     }
@@ -138,6 +138,7 @@ export const Web3Provider = ({children}) => {
         tokenContract: tokenContractInstance,
         votingContract: votingContractInstance,
         stakingContract: stakingContractInstance,
+        votingOwner,
         isOwner,
         connectWallet,
         setLoading,

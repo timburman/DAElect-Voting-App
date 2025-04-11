@@ -6,15 +6,16 @@ import MessageDisplay from '../components/MessageDisplay';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const VotingPage = () => {
-    const { account, isOwner, votingContract, isConnected, networkId, targetNetworkId, setLoading, setError } = useWeb3Context();
+    const { account, isOwner, votingContract, isConnected, networkId, targetNetworkId, setLoading, setError, votingOwner } = useWeb3Context();
     const [proposals, setProposals] = useState([]);
     const [isLoadingProposals, setIsLoadingProposals] = useState(false);
     const [proposalError, setProposalError] = useState('');
     const [showCreateModal, setShowCreateModal] = useState(false); // For create proposal form
     const [newProposalDesc, setNewProposalDesc] = useState('');
 
-    const proposalStateMap = { 0: 'Pending', 1: 'Active', 2: 'Canceled', 3: 'Defeated', 4: 'Succeeded' };
-
+    const proposalStateMap = { '0': 'Pending', '1': 'Active', '2': 'Canceled', '3': 'Defeated', '4': 'Succeeded' };
+    console.log('isOwner:', isOwner);
+    console.log('Owner:', votingOwner);
     const fetchProposals = useCallback(async () => {
         if (!votingContract) {
             // Don't set an error if contract just isn't loaded yet
@@ -37,7 +38,6 @@ const VotingPage = () => {
                         id: proposalData.id.toString(),
                         proposer: proposalData.proposer,
                         description: proposalData.description,
-                        creationTime: proposalData.creationTime.toString(),
                         startTime: proposalData.startTime.toString(),
                         endTime: proposalData.endTime.toString(),
                         forVotes: proposalData.forVotes.toString(),

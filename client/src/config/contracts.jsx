@@ -8,10 +8,11 @@ const deployedConfig = {
     addresses: {
         governanceToken: '0x704b4F59E76a9e7464f81713d3f282d69c9655ee',
         stakingContract: '0x514d54Da32c9Fa0E01D367d123e01bAcB993AF4d',
-        votingContract: '0x13d07616357a00518815Ad6a42f81a74edfCC41E'
+        votingContract: '0x13d07616357a00518815Ad6a42f81a74edfCC41E',
     }
 
 };
+
 
 const contracts = {
     token: {
