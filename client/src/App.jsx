@@ -1,35 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { Web3Provider } from './contexts/Web3Context';
+import Navbar from './components/Navbar';
+import HomePage from './pages/HomePage';
+import StakingPage from './pages/StakingPage';
+import VotingPage from './pages/VotingPage';
+import ProposalDetailPage from './pages/ProposalDetailPage';
+import DeployPage from './pages/DeployPage';
+import './assets/App.css'; // Import main CSS
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    return (
+        <Web3Provider>
+            <Router>
+                <div className="app-container">
+                    <Navbar />
+                    <main className="main-content">
+                        <Routes>
+                            <Route path="/" element={<HomePage />} />
+                            <Route path="/staking" element={<StakingPage />} />
+                            <Route path="/voting" element={<VotingPage />} />
+                            <Route path="/voting/:proposalId" element={<ProposalDetailPage />} />
+                            <Route path="/deploy" element={<DeployPage />} />
+                            {/* Add Not Found Route if desired */}
+                            {/* <Route path="*" element={<NotFoundPage />} /> */}
+                        </Routes>
+                    </main>
+                     {/* Footer could go here */}
+                </div>
+            </Router>
+        </Web3Provider>
+    );
 }
 
-export default App
+export default App;

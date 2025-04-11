@@ -28,7 +28,8 @@ router.post("/:proposalId/details", async (req, res) => {
         try {
             const result = await saveProposalDetails(proposalId, details);
             res.status(201).json({
-                message: "Details saved successfully"
+                message: "Details saved successfully",
+                ...result
               });
         } catch (error) {
             res.status(500).json({message: "Error saving proposal details", error: error.message});

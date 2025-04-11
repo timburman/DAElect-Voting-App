@@ -1,0 +1,335 @@
+/* Basic Reset */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: sans-serif;
+    background-color: #f4f4f9; /* Light background */
+    color: #333;
+  }
+  
+  /* Color Scheme Variables */
+  :root {
+    --primary-color: #A294F9;    /* Main purple */
+    --secondary-color: #CDC1FF;  /* Lighter purple */
+    --accent-color: #E5D9F2;    /* Very light purple/accent */
+    --text-color: #333;
+    --text-light: #555;
+    --bg-light: #ffffff;
+    --border-color: #e0e0e0;
+    --error-color: #d9534f;
+    --success-color: #5cb85c;
+    --warning-color: #f0ad4e;
+    --info-color: #5bc0de;
+  }
+  
+  .app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  /* Navbar Styles */
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: var(--primary-color);
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .navbar-middle .nav-link {
+    color: var(--accent-color);
+    text-decoration: none;
+    margin: 0 1rem;
+    padding: 0.5rem 0;
+    transition: color 0.2s ease-in-out;
+    position: relative;
+  }
+   .navbar-middle .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      display: block;
+      margin-top: 5px;
+      right: 0;
+      background: white;
+      transition: width 0.2s ease;
+      -webkit-transition: width 0.2s ease;
+    }
+  
+  
+  .navbar-middle .nav-link:hover,
+  .navbar-middle .nav-link.active {
+    color: white;
+  }
+   .navbar-middle .nav-link:hover::after,
+   .navbar-middle .nav-link.active::after {
+      width: 100%;
+      left: 0;
+      background-color: white;
+   }
+  
+  
+  .navbar-right .wallet-address {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 0.4rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.9em;
+    color: white;
+  }
+  
+  /* Connect Button Styles */
+  .connect-button {
+      background-color: white;
+      color: var(--primary-color);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.2s, color 0.2s;
+  }
+  .connect-button:hover:not(:disabled) {
+      background-color: var(--accent-color);
+       color: #444;
+  }
+   .connect-button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+   }
+  
+  /* Main Content Area */
+  .main-content {
+    flex-grow: 1;
+    padding: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  
+  .page {
+      background-color: var(--bg-light);
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  
+  .page h2 {
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--accent-color);
+      padding-bottom: 0.5rem;
+  }
+  
+  /* General UI Elements */
+   button {
+      padding: 0.6rem 1.2rem;
+      margin: 0.3rem;
+      cursor: pointer;
+      border: 1px solid transparent;
+      border-radius: 5px;
+      font-size: 0.95em;
+      transition: all 0.2s ease;
+      background-color: var(--secondary-color);
+      color: #333;
+   }
+   button:hover:not(:disabled) {
+      background-color: var(--primary-color);
+      color: white;
+      transform: translateY(-1px);
+       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+   }
+   button:disabled {
+      background-color: #e0e0e0;
+      color: #999;
+      cursor: not-allowed;
+   }
+  
+   input[type="text"],
+   input[type="number"],
+   textarea {
+      padding: 0.7rem;
+      margin: 0.3rem;
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      font-size: 1em;
+      min-width: 250px;
+   }
+   textarea {
+      min-height: 100px;
+      width: 100%;
+      margin-top: 0.5rem;
+   }
+  
+   /* Message Styles */
+  .message-display {
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+      border: 1px solid transparent;
+  }
+  .message-display.error {
+      background-color: #f8d7da;
+      border-color: #f5c6cb;
+      color: #721c24;
+  }
+  .message-display.warn {
+       background-color: #fff3cd;
+       border-color: #ffeeba;
+       color: #856404;
+  }
+  .message-display.info,
+  .message-display.loading {
+      background-color: #d1ecf1;
+      border-color: #bee5eb;
+      color: #0c5460;
+  }
+  
+  /* Staking Page Specifics */
+  .staking-toggle {
+      margin-bottom: 1.5rem;
+  }
+  .staking-toggle button {
+      background-color: #eee;
+      color: #555;
+      border: 1px solid #ddd;
+  }
+  .staking-toggle button.active {
+      background-color: var(--primary-color);
+      color: white;
+       border-color: var(--primary-color);
+  }
+  .staking-interface {
+      border: 1px solid var(--border-color);
+      padding: 1.5rem;
+      margin-top: 1rem;
+      border-radius: 5px;
+  }
+   .staking-interface h3 {
+      color: var(--text-light);
+      margin-bottom: 1rem;
+   }
+    .staking-interface p {
+      margin-bottom: 0.8rem;
+    }
+     .unstake-info {
+          margin-top: 1rem;
+          padding: 1rem;
+          background-color: var(--accent-color);
+          border: 1px solid var(--secondary-color);
+          border-radius: 5px;
+     }
+  
+  /* Voting Page Specifics */
+  .proposal-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+  }
+  .proposal-card {
+      background-color: var(--bg-light);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      transition: box-shadow 0.2s ease-in-out;
+      text-decoration: none;
+      color: inherit;
+      display: block; /* Make the whole card clickable if using Link */
+  }
+  .proposal-card:hover {
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  }
+   .proposal-card h4 {
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+   }
+   .proposal-card p {
+      font-size: 0.9em;
+      color: var(--text-light);
+      margin-bottom: 0.3rem;
+      line-height: 1.4;
+   }
+    .proposal-card .status {
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.8em;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+     .proposal-card .status.active { background-color: #5bc0de; color: white; }
+     .proposal-card .status.succeeded { background-color: #5cb85c; color: white; }
+     .proposal-card .status.defeated { background-color: #d9534f; color: white; }
+     .proposal-card .status.canceled { background-color: #777; color: white; }
+     /* Add other statuses */
+  
+  
+   /* Proposal Detail Page */
+   .proposal-detail-page .description-section,
+   .proposal-detail-page .details-section,
+   .proposal-detail-page .voting-section,
+   .proposal-detail-page .results-section {
+      margin-bottom: 2rem;
+   }
+    .proposal-detail-page h3 {
+      color: var(--secondary-color);
+      margin-bottom: 0.8rem;
+      padding-bottom: 0.3rem;
+       border-bottom: 1px solid var(--accent-color);
+    }
+     .vote-options button {
+      margin-right: 1rem;
+     }
+  
+  /* Loading Spinner Placeholder */
+  .loading-spinner {
+      border: 4px solid var(--accent-color);
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+  }
+  
+  @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+  }
+
+  .message-display .clear-error-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    float: right;
+    font-size: 1.2em;
+    line-height: 1;
+    opacity: 0.7;
+}
+.message-display .clear-error-btn:hover {
+    opacity: 1;
+}
+
+.modal-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; }
+.modal-content { background: white; padding: 2rem; border-radius: 8px; width: 90%; max-width: 500px; }
+.modal-content h3 { margin-bottom: 1rem; }
+.modal-content textarea { width: 100%; margin-bottom: 1rem; }
+.modal-content div { display: flex; justify-content: flex-end; gap: 1rem; }
+
+Add button.edit-btn { background: none; border: none; color: var(--primary-color); cursor: pointer; font-size: 0.8em; margin-left: 5px; }
