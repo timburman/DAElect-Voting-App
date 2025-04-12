@@ -14,8 +14,7 @@ const VotingPage = () => {
     const [newProposalDesc, setNewProposalDesc] = useState('');
 
     const proposalStateMap = { '0': 'Pending', '1': 'Active', '2': 'Canceled', '3': 'Defeated', '4': 'Succeeded' };
-    console.log('isOwner:', isOwner);
-    console.log('Owner:', votingOwner);
+
     const fetchProposals = useCallback(async () => {
         if (!votingContract) {
             // Don't set an error if contract just isn't loaded yet

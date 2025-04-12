@@ -10,8 +10,6 @@ const ProposalDetailPage = () => {
     const navigate = useNavigate();
     const { web3, account, votingContract, isConnected, networkId, targetNetworkId, setLoading, setError, clearError, isOwner } = useWeb3Context(); // Added isOwner
 
-    console.log('isOwner:', isOwner);
-
     const [proposalData, setProposalData] = useState(null); // Blockchain data
     const [detailsText, setDetailsText] = useState(''); // Off-chain data
     const [isLoadingBc, setIsLoadingBc] = useState(false); // Loading blockchain data

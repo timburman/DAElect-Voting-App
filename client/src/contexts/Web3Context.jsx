@@ -125,6 +125,8 @@ export const Web3Provider = ({children}) => {
                 setIsOwner(false);
             }
         };
+
+        fetchOwner();
     }, [votingContractInstance, account]);
 
     const value = {
