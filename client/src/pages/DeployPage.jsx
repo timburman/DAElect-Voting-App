@@ -289,12 +289,12 @@ const DeployPage = () => {
 
          const newConfig = {
              name: daoName.trim(),
-             ...deploymentSuccessInfo // token, staking, voting addresses
+             ...deploymentSuccessInfo 
          };
 
-         saveDaoConfig(newConfig); // Save to LocalStorage via context
-         switchDao(newConfig); // Switch context to use this new DAO
-         navigate('/voting'); // Navigate to voting page for the new DAO
+         saveDaoConfig(newConfig); 
+         switchDao(newConfig); 
+         navigate('/voting');
     };
 
     if (!isConnected || networkId !== targetNetworkId) {
@@ -304,10 +304,10 @@ const DeployPage = () => {
    return (
        <div className="page deploy-page">
            <h2>Deploy Your DAO Contracts</h2>
-           <MessageDisplay /> {/* Global loading/error */}
-           {pageError && <MessageDisplay specificError={pageError} />} {/* Page specific error */}
+           <MessageDisplay />
+           {pageError && <MessageDisplay specificError={pageError} />}
 
-           {/* Step 1: Token Choice */}
+           
            {!verifiedTokenInfo && (
                <section className="deploy-step">
                    <h3>Step 1: Governance Token</h3>
@@ -319,7 +319,7 @@ const DeployPage = () => {
                        No, Create New Token
                    </button>
 
-                   {/* Step 2a: Create New */}
+                   
                    {tokenChoice === 'create' && (
                        <form onSubmit={handleDeployToken} className="deploy-form">
                            <h4>Create New Token</h4>
@@ -333,7 +333,7 @@ const DeployPage = () => {
                        </form>
                    )}
 
-                   {/* Step 2b: Use Existing */}
+                   
                     {tokenChoice === 'existing' && (
                        <div className="deploy-form">
                            <h4>Use Existing Token</h4>
@@ -347,7 +347,7 @@ const DeployPage = () => {
            )}
 
 
-           {/* Step 3: Deploy Staking */}
+           
            {verifiedTokenInfo && !deployedStakingAddress && (
                 <section className="deploy-step">
                     <h3>Step 2: Deploy Staking Contract</h3>
@@ -360,7 +360,7 @@ const DeployPage = () => {
                 </section>
            )}
 
-            {/* Step 4: Deploy Voting */}
+            
             {deployedStakingAddress && !deployedVotingAddress && (
                 <section className="deploy-step">
                     <h3>Step 3: Deploy Voting Contract</h3>
@@ -376,7 +376,7 @@ const DeployPage = () => {
                 </section>
             )}
 
-             {/* Step 5: Summary */}
+             
              {deploymentSuccessInfo && (
                   <section className="deploy-step success-summary">
                       <h3>✅ Deployment Successful!</h3>
