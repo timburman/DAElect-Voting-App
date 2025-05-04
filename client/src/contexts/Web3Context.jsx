@@ -186,7 +186,7 @@ export const Web3Provider = ({children}) => {
     }, [web3, account, networkId, targetNetworkId, currentDaoAddresses]);
 
     useEffect(() => {
-        const handelAccountsChanged = (accounts) => {
+        const handleAccountsChanged = (accounts) => {
             console.log("Accounts Changed", accounts);
 
             if (accounts.length > 0 && accounts[0] !== account) {
@@ -205,19 +205,19 @@ export const Web3Provider = ({children}) => {
             }
         };
 
-        const handelChainChanged = (chainId) => {
+        const handleChainChanged = (chainId) => {
             console.log("Network changed:", chainId);
 
             window.location.reload();
         };
 
         if (window.ethereum) {
-            window.ethereum.on('accountsChanged', handelAccountsChanged);
-            window.ethereum.on('chainChanged', handelChainChanged);
+            window.ethereum.on('accountsChanged', handleAccountsChanged);
+            window.ethereum.on('chainChanged', handleChainChanged);
 
             return () => {
-                window.ethereum.removeListener('accountsChanged', handelAccountsChanged);
-                window.ethereum.removeListener('chainChanged', handelChainChanged);
+                window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
+                window.ethereum.removeListener('chainChanged', handleChainChanged);
             };
         }
     }, [account, connectWallet]);
