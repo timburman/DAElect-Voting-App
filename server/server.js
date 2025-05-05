@@ -1,18 +1,28 @@
 require('dotenv').config();
-console.log('Loaded env:', process.env.PORT);
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const proposalRoutes = require("./routes/proposals");
+const daoRoutes = require("./routes/daos");
+const { connectDb } = require("./database");
+
+
+try {
+    connectDb();
+} catch (err) {
+    console.error("Failed to connect to database on startup. Exiting:",err);
+    process.exit(1);
+}
 
 const app = express();
-const PORT = process.env.PORT || 3002;
-;
+const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
 
-app.use('/api/proposals', proposalRoutes);
+app.use('/api/daos', daoRoutes);
+app.use('/api/daos/:daoInstanceId/proposals', proposalRoutes);
+
 
 if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '..', 'client', 'build')));
