@@ -47,7 +47,7 @@ const parseQuorum = (input) => {
 
 const DeployPage = () => {
 
-    const { web3, account, isConnected, networkId, targetNetworkId, setLoading, setError, clearError, switchDao, saveDaoConfig, addAndSelectDao } = useWeb3Context();
+    const { web3, account, isConnected, networkId, targetNetworkId, setLoading, setError, clearError, switchDao, saveDaoConfig, addAndSelectDao, getSignature } = useWeb3Context();
     const navigate = useNavigate();
 
     const [tokenChoice, setTokenChoice] = useState(null);
@@ -156,6 +156,16 @@ const DeployPage = () => {
 
             const tempToken = new web3.eth.Contract(contractArtifacts.token.abi, enteredAddress);
 
+            const signatureMessage = `Sign to verify you are the owner of this ERC-20 token at address: ${enteredAddress}. No Gas will be charged`;
+
+            const localValidSig = await getSignature(signatureMessage);
+            if (!localValidSig) {
+                setPageError("Verification Failed: Your connected account is not the owner of this token contract.");
+                setLoading(false);
+                setIsProcessingToken(false);
+                return;
+            }
+
             const [name, symbol, owner] = await Promise.all([
                 tempToken.methods.name().call(),
                 tempToken.methods.symbol().call(),
@@ -170,7 +180,7 @@ const DeployPage = () => {
                 setIsProcessingToken(false);
                 return;
             }
-
+            
             console.log("Token Verified:", { name, symbol, decimals: '18', address: enteredAddress });
             setVerifiedTokenInfo({
                 name,

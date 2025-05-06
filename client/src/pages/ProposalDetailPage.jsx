@@ -8,7 +8,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 const ProposalDetailPage = () => {
     const { proposalId } = useParams();
     const navigate = useNavigate();
-    const { web3, account, votingContract, isConnected, networkId, targetNetworkId, setLoading, setError, clearError, isOwner, currentDaoAddresses } = useWeb3Context(); // Added isOwner
+    const { web3, account, votingContract, isConnected, networkId, targetNetworkId, setLoading, setError, clearError, isOwner, currentDaoAddresses, getSignature } = useWeb3Context(); // Added isOwner
 
     const [proposalData, setProposalData] = useState(null); // Blockchain data
     const [detailsText, setDetailsText] = useState(''); // Off-chain data
@@ -164,13 +164,21 @@ const ProposalDetailPage = () => {
         setIsSavingDetails(true);
         setPageError('');
         try {
+            const signatureMessage = "Verify ownership to edit/change details.";
+            const ownerSignature = await getSignature(signatureMessage);
+
+            if (!ownerSignature) {
+                setIsSavingDetails(false);
+                setError("Ownership verification failed.");
+                return;
+            }
             await saveDetails(currentDaoAddresses.id, proposalId, editedDetails);
             setDetailsText(editedDetails);  
             setIsEditingDetails(false);
 
         } catch (err) {
             console.error("Error saving details:", err);
-            setPageError("Failed to save additional details.");
+            setError("Failed to save additional details.");
         } finally {
             setIsSavingDetails(false);
         }
@@ -297,7 +305,7 @@ const ProposalDetailPage = () => {
                  </div>
              )}
 
-             <button onClick={() => navigate('/voting')} style={{ marginTop: '2rem' }}>&larr; Back to Proposals</button>
+             <button onClick={() => navigate('/dashboard')} style={{ marginTop: '2rem' }}>&larr; Back to Proposals</button>
 
         </div>
     );

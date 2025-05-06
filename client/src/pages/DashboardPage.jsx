@@ -10,7 +10,7 @@ const DaoCard = ({daoConfig, isActive, onSelect}) => {
 
     const {name, token, staking, voting} = daoConfig;
     const truncated = (addr) => addr ? `${addr.substring(0,6)}...${addr.substring(addr.length - 4)}` : 'N/A';
-
+    console.log("Dao Config:",daoConfig);
     return (
 
         <div className={`dao-card ${isActive ? 'active' : ''}`} onClick={() => onSelect(daoConfig)}>
@@ -51,6 +51,7 @@ const DashboardPage = () => {
     const [mode, setMode] = useState('stake');
 
     const proposalStateMap = {0: 'Pending', 1: 'Active', 2: 'Canceled', 3: 'Defeated', 4: 'Succeeded'};
+
 
     const fetchProposals = useCallback(async () => {
 

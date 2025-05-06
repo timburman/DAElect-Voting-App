@@ -33,6 +33,7 @@ export const Web3Provider = ({children}) => {
     const [votingOwner, setVotingOwner] = useState('');
     const [isOwner, setIsOwner] = useState(false);
 
+
     const clearError = useCallback(() => setError(''), []);
     const setLoading = useCallback((loading, message = '') => setIsLoading(loading ? message || true : false), []);
 
@@ -288,6 +289,14 @@ export const Web3Provider = ({children}) => {
         fetchOwner();
     }, [votingContractInstance, account]);
 
+    const getSignature = async (message) => {
+        const signedMessage = await web3.eth.personal.sign(message, account, '');
+
+        const verifySig = await web3.eth.personal.ecRecover(message, signedMessage);
+
+        return account.toLowerCase() === verifySig.toLowerCase();
+    }
+
     const value = {
         web3,
         account,
@@ -308,7 +317,8 @@ export const Web3Provider = ({children}) => {
         savedDaoConfigs,
         currentDaoAddresses,
         switchDao,
-        addAndSelectDao
+        addAndSelectDao,
+        getSignature,
     };
 
     return (
