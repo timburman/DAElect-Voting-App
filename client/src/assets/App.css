@@ -333,3 +333,103 @@
 .modal-content div { display: flex; justify-content: flex-end; gap: 1rem; }
 
 Add button.edit-btn { background: none; border: none; color: var(--primary-color); cursor: pointer; font-size: 0.8em; margin-left: 5px; }
+
+/* Example Additions to App.css */
+
+.dashboard-page h3 { /* Style for section headers within dashboard */
+  color: var(--primary-color);
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--accent-color);
+}
+.dashboard-page h4 { /* Style for sub-section headers */
+  color: var(--text-light);
+  margin-bottom: 1rem;
+}
+
+.dao-selection-section {
+  margin-bottom: 1.5rem;
+}
+
+.dao-card-container {
+  display: flex;
+  flex-wrap: wrap; /* Allow cards to wrap on smaller screens */
+  gap: 1rem; /* Space between cards */
+}
+
+.dao-card {
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  background-color: var(--bg-light);
+  min-width: 250px; /* Minimum card width */
+  flex: 1; /* Allow cards to grow */
+}
+
+.dao-card:hover {
+  border-color: var(--secondary-color);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.dao-card.active {
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 12px rgba(162, 148, 249, 0.3); /* Subtle shadow with primary color */
+  background-color: #f8f6ff; /* Slightly different background */
+}
+
+.dao-card h4 {
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+  margin-top: 0;
+}
+.dao-card p {
+  font-size: 0.8em;
+  color: var(--text-light);
+  word-break: break-all; /* Break long addresses */
+}
+
+
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border-color);
+  margin: 2rem 0;
+}
+.subsection-divider {
+   border: none;
+   border-top: 1px dashed var(--accent-color);
+   margin: 1.5rem 0;
+}
+
+
+.active-dao-section {
+  /* Optional: Add styling for the container of active DAO details */
+}
+
+.dashboard-subsection {
+  margin-bottom: 2rem;
+}
+
+/* Ensure proposal list still uses grid */
+.proposals-subsection .proposal-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Adjust minmax if needed */
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Ensure Staking Interface fits well */
+.staking-subsection .staking-interface {
+  border: none; /* Remove default border if desired */
+  padding: 0;   /* Remove default padding if desired */
+  margin-top: 0;
+}
+.staking-subsection .staking-interface h3 { display: none; } /* Hide redundant h3 */
+/* Separate stake/unstake visually */
+.staking-subsection > .staking-interface:last-of-type {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed var(--accent-color);
+}

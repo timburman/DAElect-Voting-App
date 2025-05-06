@@ -3,11 +3,10 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Web3Provider } from './contexts/Web3Context';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
-import StakingPage from './pages/StakingPage';
-import VotingPage from './pages/VotingPage';
+import DashboardPage from './pages/DashboardPage';
 import ProposalDetailPage from './pages/ProposalDetailPage';
 import DeployPage from './pages/DeployPage';
-import './assets/App.css'; // Import main CSS
+import './assets/App.css';
 
 function App() {
     return (
@@ -18,8 +17,8 @@ function App() {
                     <main className="main-content">
                         <Routes>
                             <Route path="/" element={<HomePage />} />
-                            <Route path="/staking" element={<StakingPage />} />
-                            <Route path="/voting" element={<VotingPage />} />
+                            <Route path="/dashboard" element={<DashboardPage />} />
+
                             <Route path="/voting/:proposalId" element={<ProposalDetailPage />} />
                             <Route path="/deploy" element={<DeployPage />} />
                             {/* Add Not Found Route if desired */}

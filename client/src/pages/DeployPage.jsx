@@ -261,10 +261,11 @@ const DeployPage = () => {
                 const newVotingAddress = receipt.contractAddress;
                 console.log("Voting Contract Deployed:", newVotingAddress);
                 setDeployedVotingAddress(newVotingAddress);
+                console.log("Voting Address:",deployedVotingAddress);
                 setDeploymentSuccessInfo({
                     token: verifiedTokenInfo.address,
                     staking: deployedStakingAddress,
-                    voting: deployedVotingAddress,
+                    voting: newVotingAddress,
                 });
                 setLoading(false);
             })
@@ -306,7 +307,7 @@ const DeployPage = () => {
             addAndSelectDao(savedDaoWithId);
 
             setLoading(false);
-            navigate('/voting');
+            navigate('/dashboard');
         } catch (error) {
             console.error("Failed to save DAO instance:", error);
             const errorMsg = error.response?.data?.message || error.message || "Failed to save DAO configuration to server.";

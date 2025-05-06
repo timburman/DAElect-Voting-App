@@ -15,7 +15,7 @@ export const fetchDetails = async (daoId ,proposalId) => {
         throw new Error("DAO ID and Proposal ID are required.");
     }
     try {
-        const response = await apiClient.get(`/daos/<span class="math-inline>\{daoId\}/proposals/</span>{proposalId}/details"`);
+        const response = await apiClient.get(`/daos/${daoId}/proposals/${proposalId}/details`);
         return response.data.details;
     } catch (error) {
         console.error(`Error fetching details for DAO ${daoId}, Proposal ${proposalId}:`, error);
@@ -33,7 +33,7 @@ export const saveDetails = async (daoId, proposalId, details) => {
         throw new Error("DAO ID and Proposal ID are required.");
     }
     try {
-        const resposne = await apiClient.post(`/daos/<span class="math-inline">\{daoId\}/proposals/</span>{proposalId}/details`, {details});
+        const resposne = await apiClient.post(`/daos/${daoId}/proposals/${proposalId}/details`, {details});
         return resposne.data;
     } catch (error) {
         console.error(`Error saving details for DAO ${daoId}, Proposal ${proposalId}:`, error);
