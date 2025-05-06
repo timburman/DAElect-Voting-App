@@ -1,7 +1,7 @@
 import React, {createContext, useState, useEffect, useCallback, useContext} from "react";
 import Web3 from "web3";
-import {contracts, targetNetworkId, contractArtifacts, defaultAddresses, LS_DAO_CONFIGS, LS_LAST_DAO_NAME} from "../config/contracts";
-
+import { targetNetworkId, contractArtifacts, defaultAddresses, LS_DAO_CONFIGS, LS_LAST_DAO_NAME } from "../config/contracts";
+import { fetchDaoList } from "../services/proposalService";
 
 const safeJsonParse = (item) => {
     try {
@@ -29,6 +29,7 @@ export const Web3Provider = ({children}) => {
     const [tokenContractInstance, setTokenContractInstance] = useState(null);
     const [stakingContractInstance, setStakingContractInstance] = useState(null);
     const [votingContractInstance, setVotingContractInstance] = useState(null);
+
     const [votingOwner, setVotingOwner] = useState('');
     const [isOwner, setIsOwner] = useState(false);
 
@@ -38,31 +39,68 @@ export const Web3Provider = ({children}) => {
 
     useEffect(() => {
 
-        const savedJson = localStorage.getItem(LS_DAO_CONFIGS);
-        const loadedConfig = Array.isArray(safeJsonParse(savedJson)) ? safeJsonParse(savedJson) : [];
+        const loadInitialDaos = async () => {
+            setLoading(true, "Loading Dao Configurations...");
+            let loadedConfigs = [];
 
-        if (defaultAddresses.votingContract) {
-            const defaultExists = loadedConfig.some(c => {
-                c.token === defaultAddresses.governanceToken &&
-                c.staking === defaultAddresses.stakingContract &&
-                c.voting === defaultAddresses.votingContract
-            });
-            if (!defaultExists) {
-                loadedConfig.unshift({
-                    name: "DAElect",
-                    token: defaultAddresses.governanceToken,
-                    staking: defaultAddresses.stakingContract,
-                    voting: defaultAddresses.votingContract,
-                });
+            try {
+                loadedConfigs = await fetchDaoList();
+
+                localStorage.setItem(LS_DAO_CONFIGS, JSON.stringify(loadedConfigs));
+                console.log("[Context] Fetched DAOs from API:", loadedConfigs);
+            } catch (apiError) {
+                console.warn("[Context] Failed to fetch DAOs from API, trying cache:",apiError);
+                setError("Could not load DAO list from server. Using cached data if available.");
+
+                const savedJson = localStorage.getItem(LS_DAO_CONFIGS);
+                loadedConfigs = Array.isArray(safeJsonParse(savedJson)) ? safeJsonParse(savedJson) : [];
+            } finally {
+                setSavedDaoConfigs(loadedConfigs);
+
+                const lastDaoName = localStorage.getItem(LS_LAST_DAO_NAME);
+                const targetConfig = loadedConfigs.find(c => c.name === lastDaoName) || loadedConfigs[0] || null;
+                setCurrentDaoAddresses(targetConfig);
+                setLoading(false);
             }
-        }
-        setSavedDaoConfigs(loadedConfig);
+        };
+        loadInitialDaos();
+    }, [setLoading, setError]);
 
-        const lastDaoName = localStorage.getItem(LS_LAST_DAO_NAME);
-        const targetConfig = loadedConfig.find(c => c.name === lastDaoName) || loadedConfig[0] || null;
-        setCurrentDaoAddresses(targetConfig);
-            
-    }, []);
+    
+    const switchDao = useCallback((daoConfig) => {
+
+        if (daoConfig?.name && daoConfig?.token && daoConfig?.staking && daoConfig?.voting) {
+            setCurrentDaoAddresses(daoConfig);
+            localStorage.setItem(LS_LAST_DAO_NAME, daoConfig.name);
+            setTokenContractInstance(null);
+            setStakingContractInstance(null);
+            setVotingContractInstance(null);
+            setVotingOwner(''); setIsOwner(false);
+            console.log(`[Context] Switched to DAO: ${daoConfig.name}`);
+        } else {
+            console.error("[Context] Attempted to switch to invalid DAO config:", daoConfig);
+            setError("Cannot switch DAO: Invalid configuration selected.");
+        }
+
+    }, [setError]);
+
+    const addAndSelectDao = useCallback((newDaoConfig) => {
+
+        if (!newDaoConfig) {
+            console.error("Cannot add DAO without DB ID:",newDaoConfig);
+            setError("Failed to Update local DAO list after saving.");
+            return;
+        }
+
+        setSavedDaoConfigs(prev => {
+            const updated = [...prev, newDaoConfig];
+            localStorage.setItem(LS_DAO_CONFIGS, JSON.stringify(updated));
+            return updated;
+        });
+
+        switchDao(newDaoConfig);
+
+    }, [switchDao, setError]);
 
     const saveDaoConfig = useCallback((newConfig) => {
 
@@ -89,22 +127,22 @@ export const Web3Provider = ({children}) => {
 
     }, [setError]);
 
-    const switchDao = useCallback((daoConfig) => {
-        if (daoConfig && daoConfig.name && daoConfig.token && daoConfig.staking && daoConfig.voting) {
-            setCurrentDaoAddresses(daoConfig);
-            localStorage.setItem(LS_LAST_DAO_NAME, daoConfig.name);
+    // const switchDao = useCallback((daoConfig) => {
+    //     if (daoConfig && daoConfig.name && daoConfig.token && daoConfig.staking && daoConfig.voting) {
+    //         setCurrentDaoAddresses(daoConfig);
+    //         localStorage.setItem(LS_LAST_DAO_NAME, daoConfig.name);
 
-            setTokenContractInstance(null);
-            setStakingContractInstance(null);
-            setVotingContractInstance(null);
-            setVotingOwner('');
-            setIsOwner(false);
-            console.log(`Switched to Dao: ${daoConfig.name}`);
-        } else {
-            console.error("Attemped to switch to invalid Dao config:", daoConfig);
-            setError("Cannot Switch Dao: Invalid configuration selected");
-        }
-    }, [setError]);
+    //         setTokenContractInstance(null);
+    //         setStakingContractInstance(null);
+    //         setVotingContractInstance(null);
+    //         setVotingOwner('');
+    //         setIsOwner(false);
+    //         console.log(`Switched to Dao: ${daoConfig.name}`);
+    //     } else {
+    //         console.error("Attemped to switch to invalid Dao config:", daoConfig);
+    //         setError("Cannot Switch Dao: Invalid configuration selected");
+    //     }
+    // }, [setError]);
 
 
     const connectWallet = useCallback(async () => {
@@ -128,7 +166,7 @@ export const Web3Provider = ({children}) => {
                     if (netIdStr !== targetNetworkId) {
                         setError("Please change the network to Sepolia.");
                     } else {
-                        const token = new web3Instance.eth.Contract(contracts.token.abi, contracts.token.address);
+                        // const token = new web3Instance.eth.Contract(contracts.token.abi, contracts.token.address);
                         // const staking = new web3Instance.eth.Contract(contracts.staking.abi, contracts.staking.address);
                         // const voting = new web3Instance.eth.Contract(contracts.voting.abi, contracts.voting.address);
 
@@ -153,14 +191,21 @@ export const Web3Provider = ({children}) => {
             setError("Compatible wallet not detected. Please install a wallet");
             setLoading(false);
         }
-    }, [clearError, setLoading]);
+    }, [clearError, setLoading, setError]);
 
 
     useEffect(() => {
 
         if (web3 && account && networkId === targetNetworkId && currentDaoAddresses) {
-            console.log("Instantiating contracts for DAO:", currentDaoAddresses.name || 'Unnamed DAO');
+            console.log("[Context] Instantiating contracts for DAO:", currentDaoAddresses.name || 'Unnamed DAO', currentDaoAddresses);
             try {
+
+                if (!web3.utils.isAddress(currentDaoAddresses.token) ||
+                    !web3.utils.isAddress(currentDaoAddresses.staking) ||
+                    !web3.utils.isAddress(currentDaoAddresses.voting)) {
+                        throw new Error("Invalid contract address found in selected DAO configuration.");
+                 }
+
                 const token = new web3.eth.Contract(contractArtifacts.token.abi, currentDaoAddresses.token);
                 const staking = new web3.eth.Contract(contractArtifacts.staking.abi, currentDaoAddresses.staking);
                 const voting = new web3.eth.Contract(contractArtifacts.voting.abi, currentDaoAddresses.voting);
@@ -170,8 +215,8 @@ export const Web3Provider = ({children}) => {
                 setVotingContractInstance(voting);
                 setError('');
             } catch (instantiationError) {
-                console.error("Contract instance error:",instantiationError);
-                setError(`Failed to load contracts for ${currentDaoAddresses.name || `select DAO`}. check addresses`);
+                console.error("[Context] Contract instance error:",instantiationError);
+                setError(`Failed to load contracts for ${currentDaoAddresses.name || `select DAO`}. check addresses/ABI`);
 
                 setTokenContractInstance(null);
                 setStakingContractInstance(null);
@@ -263,7 +308,7 @@ export const Web3Provider = ({children}) => {
         savedDaoConfigs,
         currentDaoAddresses,
         switchDao,
-        saveDaoConfig
+        addAndSelectDao
     };
 
     return (

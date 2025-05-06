@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useWeb3Context } from "../contexts/Web3Context";
 import { contractArtifacts } from "../config/contracts";
+import { saveDaoInstance } from "../services/proposalService";
 import MessageDisplay from "../components/MessageDisplay";
 import LoadingSpinner from "../components/LoadingSpinner";
 
@@ -46,7 +47,7 @@ const parseQuorum = (input) => {
 
 const DeployPage = () => {
 
-    const { web3, account, isConnected, networkId, targetNetworkId, setLoading, setError, clearError, switchDao, saveDaoConfig } = useWeb3Context();
+    const { web3, account, isConnected, networkId, targetNetworkId, setLoading, setError, clearError, switchDao, saveDaoConfig, addAndSelectDao } = useWeb3Context();
     const navigate = useNavigate();
 
     const [tokenChoice, setTokenChoice] = useState(null);
@@ -54,6 +55,9 @@ const DeployPage = () => {
     const [tokenName, setTokenName] = useState('');
     const [tokenSymbol, setTokenSymbol] = useState('');
     const [initialSupplyInput, setInitialSupplyInput] = useState('');
+
+    const [daoNameToSave, setDaoNameToSave] = useState('');
+    const [isSavingDao, setIsSavingDao] = useState(false);
 
     const [governanceTokenAddressInput, setGovernanceTokenAddressInput] = useState('');
 
@@ -278,23 +282,39 @@ const DeployPage = () => {
         }
     }
 
-    const handleSaveAndUse = () => {
-        if (!deploymentSuccessInfo) return;
+    const handleSaveAndUse = async () => {
+        if (!deploymentSuccessInfo || !daoNameToSave.trim()) {
+            setPageError("Please enter a name for this DAO instance.");
+            return;
+        }
 
-        const daoName = prompt("Enter a name for this DAO instance:", `${verifiedTokenInfo?.symbol || 'My'} DAO`);
-         if (!daoName || !daoName.trim()) {
-             setError("Please provide a name to save this DAO configuration.");
-             return;
-         }
+        clearPageError();
+        setIsSavingDao(true);
+        setLoading(true, `Saving DAO instance "${daoNameToSave.trim()}"...`);
+        setError('');
 
-         const newConfig = {
-             name: daoName.trim(),
-             ...deploymentSuccessInfo 
-         };
+        const daoData = {
+            name: daoNameToSave.trim(),
+            token: deploymentSuccessInfo.token,
+            staking: deploymentSuccessInfo.staking,
+            voting: deploymentSuccessInfo.voting
+        };
 
-         saveDaoConfig(newConfig); 
-         switchDao(newConfig); 
-         navigate('/voting');
+        try {
+            const savedDaoWithId = await saveDaoInstance(daoData);
+
+            addAndSelectDao(savedDaoWithId);
+
+            setLoading(false);
+            navigate('/voting');
+        } catch (error) {
+            console.error("Failed to save DAO instance:", error);
+            const errorMsg = error.response?.data?.message || error.message || "Failed to save DAO configuration to server.";
+            setError(errorMsg);
+            setLoading(false);
+        } finally {
+            setIsSavingDao(false);
+        }
     };
 
     if (!isConnected || networkId !== targetNetworkId) {
@@ -376,22 +396,33 @@ const DeployPage = () => {
                 </section>
             )}
 
-             
-             {deploymentSuccessInfo && (
+
+                {deploymentSuccessInfo && (
                   <section className="deploy-step success-summary">
                       <h3>✅ Deployment Successful!</h3>
                       <p>Your new DAO contracts are ready:</p>
+                      {/* ... (Display addresses) ... */}
                       <ul>
                           <li><strong>Governance Token:</strong> <code>{deploymentSuccessInfo.token}</code></li>
                           <li><strong>Staking Contract:</strong> <code>{deploymentSuccessInfo.staking}</code></li>
                           <li><strong>Voting Contract:</strong> <code>{deploymentSuccessInfo.voting}</code></li>
                       </ul>
-                      <p>You are the owner of the Staking and Voting contracts.</p>
-                      <button onClick={handleSaveAndUse}>
-                          Save & Use This DAO Instance
+                      {/* Input for DAO Name */}
+                      <div className="deploy-form" style={{marginTop: '1rem'}}>
+                          <input
+                              type="text"
+                              placeholder="Enter a Name for this DAO"
+                              value={daoNameToSave}
+                              onChange={(e) => setDaoNameToSave(e.target.value)}
+                              required
+                          />
+                      </div>
+
+                      <button onClick={handleSaveAndUse} disabled={!daoNameToSave.trim() || isSavingDao}>
+                          {isSavingDao ? 'Saving...' : 'Save & Use This DAO Instance'}
                       </button>
                   </section>
-             )}
+                )}
 
        </div>
    );

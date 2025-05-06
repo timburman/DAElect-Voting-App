@@ -8,7 +8,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 const ProposalDetailPage = () => {
     const { proposalId } = useParams();
     const navigate = useNavigate();
-    const { web3, account, votingContract, isConnected, networkId, targetNetworkId, setLoading, setError, clearError, isOwner } = useWeb3Context(); // Added isOwner
+    const { web3, account, votingContract, isConnected, networkId, targetNetworkId, setLoading, setError, clearError, isOwner, currentDaoAddresses } = useWeb3Context(); // Added isOwner
 
     const [proposalData, setProposalData] = useState(null); // Blockchain data
     const [detailsText, setDetailsText] = useState(''); // Off-chain data
@@ -71,23 +71,23 @@ const ProposalDetailPage = () => {
         } finally {
             setIsLoadingBc(false);
         }
-    }, [votingContract, proposalId, account]); // Added account dependency for userVoteInfo
+    }, [votingContract, proposalId, account]);
 
-    // Fetch Off-Chain Details
+    
     const fetchOffChainDetails = useCallback(async () => {
-        if (!proposalId) return;
+        if (!proposalId || !currentDaoAddresses?.id) return;
         setIsLoadingDetails(true);
         try {
-            const fetchedDetails = await fetchDetails(proposalId);
-            setDetailsText(fetchedDetails || ''); // Set empty string if null
-            setEditedDetails(fetchedDetails || ''); // Initialize editor
+            const fetchedDetails = await fetchDetails(currentDaoAddresses.id,proposalId);
+            setDetailsText(fetchedDetails || '');
+            setEditedDetails(fetchedDetails || '');
         } catch (err) {
             console.warn("Could not fetch off-chain details:", err);
-            // Don't show critical error, maybe just console log or subtle indicator
+            
         } finally {
             setIsLoadingDetails(false);
         }
-    }, [proposalId]);
+    }, [proposalId, currentDaoAddresses?.id]);
 
     useEffect(() => {
         if (isConnected && networkId === targetNetworkId) {
@@ -157,14 +157,17 @@ const ProposalDetailPage = () => {
     };
 
      const handleSaveDetails = async () => {
-        if (!proposalId) return;
+        if (!proposalId || !currentDaoAddresses?.id) {
+            setPageError("Cannot save details: DAO or Proposal ID missing.");
+            return;
+        }
         setIsSavingDetails(true);
         setPageError('');
         try {
-            await saveDetails(proposalId, editedDetails);
-            setDetailsText(editedDetails); // Update displayed text
-            setIsEditingDetails(false); // Exit edit mode
-            // Optional: show success message
+            await saveDetails(currentDaoAddresses.id, proposalId, editedDetails);
+            setDetailsText(editedDetails);  
+            setIsEditingDetails(false);
+
         } catch (err) {
             console.error("Error saving details:", err);
             setPageError("Failed to save additional details.");
@@ -173,6 +176,15 @@ const ProposalDetailPage = () => {
         }
     };
 
+
+    useEffect(() => {
+
+        if (isConnected && networkId === targetNetworkId) {
+            fetchBlockchainData();
+            fetchOffChainDetails();
+        }
+
+    }, [isConnected, networkId, targetNetworkId, fetchBlockchainData, fetchOffChainDetails]);
      // --- Render Logic ---
      const isLoading = isLoadingBc || isLoadingDetails; // Overall loading state
      const canVote = proposalData?.state === '1' // Active
@@ -197,7 +209,7 @@ const ProposalDetailPage = () => {
 
     return (
         <div className="page proposal-detail-page">
-            <h2>Proposal #{proposalData.id} - {proposalData.stateText} {proposalData.canceled && '(Canceled)'}</h2>
+            <h2>Proposal #{proposalData?.id} (DAO: {currentDaoAddresses?.name || '...'})</h2>
              <MessageDisplay /> {/* Display global messages */}
 
             <div className="description-section">
