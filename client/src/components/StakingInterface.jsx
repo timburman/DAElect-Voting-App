@@ -196,8 +196,8 @@ const StakingInterface = () => {
 
             {/* Display Balances */}
              <div className="staking-balances">
-                 <p>Your Balance: {fromWei(tokenBalance)} TKN</p>
-                 <p>Currently Staked: {fromWei(stakedBalance)} TKN</p>
+                 <p>Your Balance: {fromWei(tokenBalance)} {tokenSymbol}</p>
+                 <p>Currently Staked: {fromWei(stakedBalance)} {tokenSymbol}</p>
              </div>
 
 
@@ -205,7 +205,7 @@ const StakingInterface = () => {
             {stakingMode === 'stake' && (
                 <div className="stake-section">
                      <h4>Stake Tokens</h4>
-                     <p><small>Allowance: {fromWei(allowance)} TKN</small></p>
+                     <p><small>Allowance: {fromWei(allowance)} {tokenSymbol}</small></p>
                      <div>
                          <input type="number" placeholder="Amount" value={amount} onChange={(e) => { setAmount(e.target.value); clearLocalError(); }} disabled={isSubmitting} min="0" step="any"/>
                          <button onClick={handleApprove} disabled={isSubmitting || !amount || parseFloat(amount) <= 0}>
@@ -230,7 +230,7 @@ const StakingInterface = () => {
                         </div>
                      ) : (
                          <div className='unstake-info'> {/* Display Pending Unstake */}
-                             <p><strong>Unstake Pending:</strong> {fromWei(unstakeInfo.amount)} TKN</p>
+                             <p><strong>Unstake Pending:</strong> {fromWei(unstakeInfo.amount)} {tokenSymbol}</p>
                              <p>Unlock Time: {formatTimestamp(unstakeInfo.unlockTime)}</p>
                              <button onClick={handleWithdraw} disabled={isSubmitting || !canWithdraw}>
                                  {isSubmitting ? 'Processing...' : 'Withdraw Now'}

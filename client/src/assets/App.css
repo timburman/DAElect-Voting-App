@@ -435,3 +435,289 @@ Add button.edit-btn { background: none; border: none; color: var(--primary-color
 }
 .stake-section input, .unstake-section input { width: calc(100% - 1rem); margin-bottom: 0.5rem; }
 .stake-section div button, .unstake-section div button { width: 48%; }
+
+/* --- HomePage Styles --- */
+
+.home-page {
+    padding: 0; /* Remove default page padding */
+    background-color: var(--bg-light);
+}
+
+/* Hero Section */
+.hero-section {
+    /* Use a subtle gradient or a solid color from the palette */
+    background: linear-gradient(145deg, var(--primary-color) 0%, #b7aaff 100%); /* Adjusted gradient */
+    color: white;
+    padding: 5rem 2rem 6rem 2rem; /* More padding top/bottom */
+    text-align: center;
+    min-height: 50vh; /* Ensure it takes up noticeable space */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* For potential pseudo-elements */
+    overflow: hidden;
+}
+
+/* Optional: Add a subtle pattern or shapes */
+/* .hero-section::before { content: ''; ... } */
+
+.hero-icon-brand {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+     opacity: 0.9;
+}
+
+.hero-content {
+    max-width: 750px;
+    z-index: 1; /* Ensure text is above potential background elements */
+}
+
+.hero-title {
+    font-size: clamp(2.5rem, 6vw, 3.8rem); /* Responsive font size */
+    font-weight: 700; /* Bolder */
+    margin-bottom: 1rem;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+     text-shadow: 1px 1px 3px rgba(0,0,0,0.1); /* Subtle shadow */
+}
+
+.hero-subtitle {
+    font-size: clamp(1.1rem, 3vw, 1.3rem);
+    margin-bottom: 2.5rem;
+    opacity: 0.95; /* Slightly more opaque */
+    line-height: 1.7;
+    color: var(--accent-color); /* Use accent color for subtitle */
+}
+
+.hero-cta {
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem; /* Slightly more gap */
+    flex-wrap: wrap;
+}
+
+.hero-cta .cta-button,
+.final-cta-section .cta-button /* Style all CTA buttons similarly */
+ {
+    padding: 0.8rem 1.8rem; /* Slightly adjust padding */
+    font-size: 1rem;
+    border-radius: 50px; /* Fully rounded */
+    border: none;
+    cursor: pointer;
+    transition: all 0.25s ease-out;
+    font-weight: 600; /* Medium bold */
+    display: inline-flex; /* Align icon and text */
+    align-items: center;
+    justify-content: center;
+    text-decoration: none; /* Remove underline if using Link styled as button */
+}
+.hero-cta .cta-button:hover,
+.final-cta-section .cta-button:hover {
+     transform: translateY(-3px);
+     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+
+/* Primary CTA style (Explore/Go To) */
+.hero-cta .cta-button.primary,
+.final-cta-section .cta-button /* Default button style */
+ {
+    background-color: white;
+    color: var(--primary-color);
+}
+.hero-cta .cta-button.primary:hover,
+.final-cta-section .cta-button:hover {
+    background-color: #f8f6ff; /* Slightly off-white hover */
+    color: #8e7de0; /* Slightly darker primary */
+}
+
+/* Secondary CTA style (Deploy) */
+.hero-cta .cta-button.secondary,
+.final-cta-section .cta-button.secondary {
+    background-color: transparent;
+    color: white; /* White text on hero */
+    border: 2px solid white;
+}
+.final-cta-section .cta-button.secondary { /* Adjust for light background */
+     color: var(--primary-color);
+     border-color: var(--primary-color);
+}
+
+.hero-cta .cta-button.secondary:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+.final-cta-section .cta-button.secondary:hover {
+    background-color: rgba(162, 148, 249, 0.1); /* Use faint primary */
+    color: var(--primary-color);
+}
+
+/* Connect Button specific style within CTA */
+.hero-cta .connect-button {
+     padding: 0.8rem 1.8rem;
+     font-size: 1rem;
+     border-radius: 50px;
+     font-weight: 600;
+     /* Inherit hover from primary/secondary or define specific */
+     background-color: white;
+     color: var(--primary-color);
+     border: none;
+}
+.hero-cta .connect-button:hover:not(:disabled) {
+     background-color: #f8f6ff;
+     color: #8e7de0;
+     transform: translateY(-3px);
+     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+
+.wallet-info-hero {
+    margin-top: 1.5rem;
+    font-size: 0.9em;
+    color: var(--accent-color);
+    background-color: rgba(0,0,0,0.1);
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    display: inline-block;
+}
+
+
+/* General Section Styling */
+.features-section, .how-it-works-section, .final-cta-section {
+    padding: 5rem 2rem; /* Increased padding */
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto; /* Center sections */
+}
+.how-it-works-section {
+     background-color: #fdfaff; /* Very subtle off-white for variety */
+}
+
+.section-title {
+    text-align: center;
+    font-size: 2.2rem; /* Slightly larger */
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 3.5rem; /* More space below title */
+}
+
+/* Features Section */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* Slightly larger min */
+    gap: 2.5rem; /* More gap */
+}
+
+.feature-card {
+    background-color: #fff;
+    padding: 2rem 1.5rem; /* Adjust padding */
+    border-radius: 10px; /* Slightly more rounded */
+    text-align: center;
+    border: 1px solid var(--border-color); /* Subtle border */
+    box-shadow: 0 4px 10px rgba(162, 148, 249, 0.05); /* Subtle shadow */
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(162, 148, 249, 0.15); /* Enhanced shadow */
+}
+
+.feature-icon {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem; /* More space below icon */
+}
+
+.feature-card h3 {
+    font-size: 1.25rem;
+    color: var(--text-color);
+    margin-bottom: 0.8rem;
+}
+
+.feature-card p {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    line-height: 1.65;
+}
+
+/* How it Works Section */
+.steps-container {
+    display: grid; /* Use grid for better alignment control */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2.5rem;
+    margin-top: 2rem;
+}
+
+.step-card {
+    text-align: center;
+    padding: 1rem;
+    /* Remove background/border or add subtle ones */
+    /* background-color: #fff; */
+    /* border-radius: 8px; */
+}
+
+.step-number {
+    width: 45px; /* Slightly smaller */
+    height: 45px;
+    line-height: 45px;
+    border-radius: 50%;
+    background-color: var(--accent-color);
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 1.3rem;
+    margin: 0 auto 1.5rem auto; /* More space below number */
+    display: flex; /* Center icon inside */
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.step-icon { /* Style icons within steps */
+    color: var(--primary-color);
+     margin-bottom: 1rem; /* Space below icon */
+     /* Remove step number if using icons prominently */
+     /* display: none; */
+}
+/* If keeping step numbers, icons might be redundant or placed differently */
+
+
+.step-card h3 {
+    font-size: 1.15rem; /* Slightly larger */
+    color: var(--text-color);
+    margin-bottom: 0.6rem;
+}
+
+.step-card p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+
+/* Final CTA Section */
+.final-cta-section {
+    background-color: var(--accent-color);
+    text-align: center;
+    /* Remove max-width to make it full bleed if desired */
+    max-width: 1100px;
+    border-radius: 0; /* Remove rounding for full bleed */
+    /* margin: 0; Remove margin for full bleed */
+    padding: 5rem 2rem; /* Match section padding */
+    margin-left: auto;
+    margin-right: auto;
+}
+.final-cta-section h2 {
+    color: var(--primary-color);
+}
+.final-cta-section p {
+    color: var(--text-light);
+    margin-bottom: 2.5rem; /* More space */
+    max-width: 650px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.7;
+    font-size: 1.05em;
+}
+/* Button styles already defined via .hero-cta selector */

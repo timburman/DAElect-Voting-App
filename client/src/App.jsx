@@ -5,7 +5,6 @@ import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
 import DaosListPage from './pages/DaosListPage';
 import DedicatedDaoPage from "./pages/DedicatedDaoPage";
-import DashboardPage from './pages/DashboardPage';
 import ProposalDetailPage from './pages/ProposalDetailPage';
 import DeployPage from './pages/DeployPage';
 import './assets/App.css';
