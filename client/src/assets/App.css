@@ -336,100 +336,102 @@ Add button.edit-btn { background: none; border: none; color: var(--primary-color
 
 /* Example Additions to App.css */
 
-.dashboard-page h3 { /* Style for section headers within dashboard */
-  color: var(--primary-color);
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--accent-color);
+/* Example CSS Additions in App.css */
+
+/* DAO List Page */
+.daos-list-page { }
+.dao-list-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
 }
-.dashboard-page h4 { /* Style for sub-section headers */
-  color: var(--text-light);
-  margin-bottom: 1rem;
+.dao-list-card {
+    display: block;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.5rem;
+    background-color: var(--bg-light);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease-in-out;
+}
+.dao-list-card:hover {
+    border-color: var(--secondary-color);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.07);
+    transform: translateY(-2px);
+}
+.dao-list-card h4 {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+.dao-list-card p {
+    font-size: 0.85em;
+    color: var(--text-light);
+    word-break: break-all;
 }
 
-.dao-selection-section {
-  margin-bottom: 1.5rem;
+/* Dedicated DAO Page Layout */
+.dedicated-dao-page { }
+.dedicated-dao-page > h2 { /* Style page title */
+    margin-bottom: 0.5rem;
 }
-
-.dao-card-container {
-  display: flex;
-  flex-wrap: wrap; /* Allow cards to wrap on smaller screens */
-  gap: 1rem; /* Space between cards */
+.dao-columns-container {
+    display: flex;
+    flex-wrap: wrap; /* Wrap columns on smaller screens */
+    gap: 2rem; /* Space between columns */
+    margin-top: 1.5rem;
 }
-
-.dao-card {
-  border: 2px solid var(--border-color);
-  border-radius: 8px;
-  padding: 1rem 1.5rem;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  background-color: var(--bg-light);
-  min-width: 250px; /* Minimum card width */
-  flex: 1; /* Allow cards to grow */
+.proposals-column {
+    flex: 2; /* Proposals take more space */
+    min-width: 300px; /* Minimum width */
+    /* background-color: #fdfdff; Optional: slight bg diff */
+    /* padding: 1.5rem; */
+    /* border-radius: 5px; */
 }
-
-.dao-card:hover {
-  border-color: var(--secondary-color);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+.staking-column {
+    flex: 1; /* Staking takes less space */
+    min-width: 300px; /* Minimum width */
+    /* background-color: #fbfaff; Optional: slight bg diff */
+     padding: 1.5rem;
+     border: 1px solid var(--accent-color);
+     border-radius: 8px;
 }
-
-.dao-card.active {
-  border-color: var(--primary-color);
-  box-shadow: 0 4px 12px rgba(162, 148, 249, 0.3); /* Subtle shadow with primary color */
-  background-color: #f8f6ff; /* Slightly different background */
-}
-
-.dao-card h4 {
-  color: var(--primary-color);
-  margin-bottom: 0.5rem;
-  margin-top: 0;
-}
-.dao-card p {
-  font-size: 0.8em;
-  color: var(--text-light);
-  word-break: break-all; /* Break long addresses */
-}
-
-
-.section-divider {
-  border: none;
-  border-top: 1px solid var(--border-color);
-  margin: 2rem 0;
-}
-.subsection-divider {
-   border: none;
-   border-top: 1px dashed var(--accent-color);
-   margin: 1.5rem 0;
-}
+ .proposals-column h3, .staking-column h3 {
+     margin-top: 0; /* Reset margin for column titles */
+     color: var(--primary-color);
+     border-bottom: 1px solid var(--accent-color);
+     padding-bottom: 0.5rem;
+     margin-bottom: 1rem;
+ }
+ .proposal-list-column { /* Container for cards within the column */
+    display: grid;
+    grid-template-columns: 1fr; /* Stack cards vertically */
+    gap: 1rem;
+ }
+  .proposal-list-column .proposal-card { /* Style cards within column */
+      background-color: #fff; /* Ensure background for cards */
+  }
 
 
-.active-dao-section {
-  /* Optional: Add styling for the container of active DAO details */
+ /* Staking Interface adjustments inside column */
+.staking-interface-container { }
+.staking-mode-toggle {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
 }
-
-.dashboard-subsection {
-  margin-bottom: 2rem;
+.staking-mode-toggle button {
+    background-color: #eee; color: #555; border: 1px solid #ddd; margin-right: 5px;
 }
-
-/* Ensure proposal list still uses grid */
-.proposals-subsection .proposal-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Adjust minmax if needed */
-  gap: 1rem;
-  margin-top: 1rem;
+.staking-mode-toggle button.active {
+    background-color: var(--primary-color); color: white; border-color: var(--primary-color);
 }
-
-/* Ensure Staking Interface fits well */
-.staking-subsection .staking-interface {
-  border: none; /* Remove default border if desired */
-  padding: 0;   /* Remove default padding if desired */
-  margin-top: 0;
+.staking-balances { margin-bottom: 1rem; }
+.stake-section, .unstake-section { padding-top: 1rem; }
+.stake-section h4, .unstake-section h4 {
+    margin-bottom: 0.8rem; color: var(--text-light); font-size: 1.1em;
 }
-.staking-subsection .staking-interface h3 { display: none; } /* Hide redundant h3 */
-/* Separate stake/unstake visually */
-.staking-subsection > .staking-interface:last-of-type {
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px dashed var(--accent-color);
-}
+.stake-section input, .unstake-section input { width: calc(100% - 1rem); margin-bottom: 0.5rem; }
+.stake-section div button, .unstake-section div button { width: 48%; }

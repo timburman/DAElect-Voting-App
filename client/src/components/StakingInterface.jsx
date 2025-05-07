@@ -3,18 +3,18 @@ import { useWeb3Context } from "../contexts/Web3Context";
 import { useContract } from "../hooks/useContract";
 import MessageDisplay from "./MessageDisplay";
 
-const StakingInterface = ({ mode }) => {
-    const { web3, account, setLoading: setGlobalLoading, setError: setGlobalError, clearError } = useWeb3Context();
-    const { tokenContract, stakingContract } = useContract();
+const StakingInterface = () => {
+    const { web3, account, setLoading: setGlobalLoading, setError: setGlobalError, clearError: clearGlobalError, tokenContract, stakingContract } = useWeb3Context();
 
     const [amount, setAmount] = useState('');
     const [tokenBalance, setTokenBalance] = useState('0');
     const [allowance, setAllowance] = useState('0');
-    const [stakedBalance_, setStakedBalance] = useState('0');
+    const [stakedBalance, setStakedBalance] = useState('0');
     const [unstakeInfo, setUnstakeInfo] = useState({ amount: '0', unlockTime: '0' });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [localError, setLocalError] = useState('');
     const [tokenSymbol, setTokenSymbol] = useState('');
+    const [stakingMode, setStakingMode] = useState('stake');
 
     const clearLocalError = useCallback(() => setLocalError(''), []);
 
@@ -33,7 +33,7 @@ const StakingInterface = ({ mode }) => {
         if (!account || !tokenContract || !stakingContract || !web3) {
             return;
         }
-
+        clearLocalError();
         try {
             const [bal, allow, staked, info, symbol] = await Promise.all([
                 tokenContract.methods.balanceOf(account).call(),
@@ -153,7 +153,7 @@ const StakingInterface = ({ mode }) => {
         if (!amount || parseFloat(amount) <= 0) { setLocalError("Enter valid amount."); return; }
         if (!stakingContract) { setLocalError("Staking contract not loaded."); return; }
         const weiAmount = toWei(amount);
-        if (BigInt(stakedBalance_) < BigInt(weiAmount)) { setLocalError("Insufficient staked balance."); return; }
+        if (BigInt(stakedBalance) < BigInt(weiAmount)) { setLocalError("Insufficient staked balance."); return; }
         if (unstakeInfo.amount !== '0') { setLocalError("Unstake already pending."); return; }
 
         sendTransaction(
@@ -181,66 +181,63 @@ const StakingInterface = ({ mode }) => {
     const canWithdraw = unstakeInfo.amount !== '0' && Math.floor(Date.now() / 1000) >= parseInt(unstakeInfo.unlockTime);
 
     return (
-        <div className="staking-interface">
-             {/* Display local errors specific to this interface */}
+        <div className="staking-interface-container"> {/* Changed outer class maybe */}
             {localError && <MessageDisplay specificError={localError} />}
 
-            <p>Token Balance: {fromWei(tokenBalance)} {tokenSymbol}</p>
-            <p>Staked Balance: {fromWei(stakedBalance_)} {tokenSymbol}</p>
+             {/* Mode Toggle Buttons */}
+             <div className="staking-mode-toggle">
+                 <button onClick={() => setStakingMode('stake')} className={stakingMode === 'stake' ? 'active' : ''} disabled={isSubmitting}>
+                     Stake
+                 </button>
+                 <button onClick={() => setStakingMode('unstake')} className={stakingMode === 'unstake' ? 'active' : ''} disabled={isSubmitting}>
+                     Unstake / Withdraw
+                 </button>
+             </div>
 
-            {mode === 'stake' && (
-                <>
-                    <h3>Stake Tokens</h3>
-                    <p>Allowance: {fromWei(allowance)} {tokenSymbol}</p>
-                    <div>
-                        <input
-                            type="number"
-                            placeholder="Amount to Stake"
-                            value={amount}
-                            onChange={(e) => { setAmount(e.target.value); clearLocalError(); }}
-                            disabled={isSubmitting}
-                            min="0" step="any"
-                        />
-                        <button onClick={handleApprove} disabled={isSubmitting || !amount || parseFloat(amount) <= 0}>
-                            {isSubmitting ? 'Processing...' : 'Approve'}
-                        </button>
-                        <button onClick={handleStake} disabled={isSubmitting || !amount || parseFloat(amount) <= 0 || !hasAllowance}>
-                            {isSubmitting ? 'Processing...' : 'Stake'}
-                        </button>
-                    </div>
-                </>
+            {/* Display Balances */}
+             <div className="staking-balances">
+                 <p>Your Balance: {fromWei(tokenBalance)} TKN</p>
+                 <p>Currently Staked: {fromWei(stakedBalance)} TKN</p>
+             </div>
+
+
+            {/* Conditional Rendering based on internal stakingMode */}
+            {stakingMode === 'stake' && (
+                <div className="stake-section">
+                     <h4>Stake Tokens</h4>
+                     <p><small>Allowance: {fromWei(allowance)} TKN</small></p>
+                     <div>
+                         <input type="number" placeholder="Amount" value={amount} onChange={(e) => { setAmount(e.target.value); clearLocalError(); }} disabled={isSubmitting} min="0" step="any"/>
+                         <button onClick={handleApprove} disabled={isSubmitting || !amount || parseFloat(amount) <= 0}>
+                             Approve
+                         </button>
+                         <button onClick={handleStake} disabled={isSubmitting || !amount || parseFloat(amount) <= 0 || !hasAllowance}>
+                             Stake
+                         </button>
+                     </div>
+                </div>
             )}
 
-            {mode === 'unstake' && (
-                <>
-                    <h3>Unstake Tokens</h3>
-                    <div>
-                        <input
-                            type="number"
-                            placeholder="Amount to Unstake"
-                            value={amount}
-                            onChange={(e) => { setAmount(e.target.value); clearLocalError(); }}
-                            disabled={isSubmitting || unstakeInfo.amount !== '0'} // Disable if already pending
-                            min="0" step="any"
-                        />
-                        <button
-                            onClick={handleInitiateUnstake}
-                            disabled={isSubmitting || !amount || parseFloat(amount) <= 0 || unstakeInfo.amount !== '0'}
-                        >
-                            {isSubmitting ? 'Processing...' : 'Initiate Unstake'}
-                        </button>
-                    </div>
-
-                    {unstakeInfo.amount !== '0' && (
-                        <div className='unstake-info'>
-                            <p>Pending Unstake: {fromWei(unstakeInfo.amount)} {tokenSymbol}</p>
-                            <p>Unlock Time: {formatTimestamp(unstakeInfo.unlockTime)}</p>
-                            <button onClick={handleWithdraw} disabled={isSubmitting || !canWithdraw}>
-                                {isSubmitting ? 'Processing...' : 'Withdraw'}
-                            </button>
+            {stakingMode === 'unstake' && (
+                 <div className="unstake-section">
+                     <h4>Unstake / Withdraw</h4>
+                     {unstakeInfo.amount === '0' ? (
+                        <div> {/* Initiate Unstake Form */}
+                            <input type="number" placeholder="Amount to Unstake" value={amount} onChange={(e) => { setAmount(e.target.value); clearLocalError(); }} disabled={isSubmitting} min="0" step="any"/>
+                             <button onClick={handleInitiateUnstake} disabled={isSubmitting || !amount || parseFloat(amount) <= 0}>
+                                Initiate Unstake
+                             </button>
                         </div>
-                    )}
-                </>
+                     ) : (
+                         <div className='unstake-info'> {/* Display Pending Unstake */}
+                             <p><strong>Unstake Pending:</strong> {fromWei(unstakeInfo.amount)} TKN</p>
+                             <p>Unlock Time: {formatTimestamp(unstakeInfo.unlockTime)}</p>
+                             <button onClick={handleWithdraw} disabled={isSubmitting || !canWithdraw}>
+                                 {isSubmitting ? 'Processing...' : 'Withdraw Now'}
+                             </button>
+                         </div>
+                     )}
+                </div>
             )}
         </div>
     );

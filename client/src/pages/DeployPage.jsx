@@ -317,7 +317,7 @@ const DeployPage = () => {
             addAndSelectDao(savedDaoWithId);
 
             setLoading(false);
-            navigate('/dashboard');
+            navigate('/daos');
         } catch (error) {
             console.error("Failed to save DAO instance:", error);
             const errorMsg = error.response?.data?.message || error.message || "Failed to save DAO configuration to server.";

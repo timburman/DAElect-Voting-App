@@ -174,7 +174,7 @@ export const Web3Provider = ({children}) => {
                         // setTokenContractInstance(token);
                         // setStakingContractInstance(staking);
                         // setVotingContractInstance(voting);
-
+                        
                         console.log("Wallet Connected: ",currentAccount);
                     }
                 } else {
@@ -194,6 +194,16 @@ export const Web3Provider = ({children}) => {
         }
     }, [clearError, setLoading, setError]);
 
+
+    // useEffect(async () => {
+    //     const signatureMessage = "Account Verificaton signature:";
+    //     const currentAccountSignature = await web3.eth.personal.sign(signatureMessage, currentAccount);
+    //     const verifySignatureAccount = await web3.eth.personal.ecRecover(message, currentAccountSignature);
+    //     if (currentAccount !== verifySignatureAccount) {
+    //         setError("Account Verification failed.");
+    //     }
+
+    // }, [web3, account, networkId, targetNetworkId, currentDaoAddresses])
 
     useEffect(() => {
 
@@ -289,18 +299,19 @@ export const Web3Provider = ({children}) => {
         fetchOwner();
     }, [votingContractInstance, account]);
 
-    const getSignature = async (message) => {
-        const signedMessage = await web3.eth.personal.sign(message, account, '');
+    const getSignature = async (message, account_verification = account) => {
+        const signedMessage = await web3.eth.personal.sign(message, account_verification, '');
 
         const verifySig = await web3.eth.personal.ecRecover(message, signedMessage);
 
-        return account.toLowerCase() === verifySig.toLowerCase();
+        return account_verification.toLowerCase() === verifySig.toLowerCase();
     }
 
     const value = {
         web3,
         account,
         isConnected,
+        setIsConnected,
         isLoading,
         error,
         networkId,

@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Web3Provider } from './contexts/Web3Context';
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
+import DaosListPage from './pages/DaosListPage';
+import DedicatedDaoPage from "./pages/DedicatedDaoPage";
 import DashboardPage from './pages/DashboardPage';
 import ProposalDetailPage from './pages/ProposalDetailPage';
 import DeployPage from './pages/DeployPage';
@@ -17,15 +19,17 @@ function App() {
                     <main className="main-content">
                         <Routes>
                             <Route path="/" element={<HomePage />} />
-                            <Route path="/dashboard" element={<DashboardPage />} />
-
+                            {/* Route for Browse DAOs */}
+                            <Route path="/daos" element={<DaosListPage />} />
+                            {/* Route for the dedicated page for a specific DAO */}
+                            <Route path="/dao/:daoId" element={<DedicatedDaoPage />} /> {/* Simplified route */}
+                            {/* Keep proposal detail route */}
                             <Route path="/voting/:proposalId" element={<ProposalDetailPage />} />
                             <Route path="/deploy" element={<DeployPage />} />
-                            {/* Add Not Found Route if desired */}
+                            {/* Optional: Add a redirect from /dashboard or a 404 */}
                             {/* <Route path="*" element={<NotFoundPage />} /> */}
                         </Routes>
                     </main>
-                     {/* Footer could go here */}
                 </div>
             </Router>
         </Web3Provider>

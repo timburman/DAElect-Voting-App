@@ -28,7 +28,7 @@ const HomePage = () => {
                    (Coming Soon) We aim to provide tools to help you easily deploy your own customized staking and voting contracts for your specific DAO needs. Stay tuned!
                 </p>
                  <p>
-                    Ready to participate? <Link to="/staking">Stake your tokens</Link> or <Link to="/voting">view proposals</Link>.
+                    Ready to participate? <Link to="/dashboard">Dashboard</Link> or <Link to="/deploy">Deploy</Link>.
                 </p>
             </section>
         </div>

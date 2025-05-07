@@ -8,7 +8,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 const ProposalDetailPage = () => {
     const { proposalId } = useParams();
     const navigate = useNavigate();
-    const { web3, account, votingContract, isConnected, networkId, targetNetworkId, setLoading, setError, clearError, isOwner, currentDaoAddresses, getSignature } = useWeb3Context(); // Added isOwner
+    const { web3, account, votingContract, isConnected, networkId, targetNetworkId, setLoading, setError, clearError, isOwner, currentDaoAddresses, getSignature, votingOwner } = useWeb3Context(); // Added isOwner
 
     const [proposalData, setProposalData] = useState(null); // Blockchain data
     const [detailsText, setDetailsText] = useState(''); // Off-chain data
@@ -165,8 +165,8 @@ const ProposalDetailPage = () => {
         setPageError('');
         try {
             const signatureMessage = "Verify ownership to edit/change details.";
-            const ownerSignature = await getSignature(signatureMessage);
-
+            const ownerSignature = await getSignature(signatureMessage, votingOwner);
+            console.log("Owner Signature:",ownerSignature);
             if (!ownerSignature) {
                 setIsSavingDetails(false);
                 setError("Ownership verification failed.");

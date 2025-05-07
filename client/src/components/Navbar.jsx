@@ -18,9 +18,10 @@ const Navbar = () => {
             </div>
             <div className="navbar-middle">
                 {/* Updated Links */}
-                <NavLink to="/dashboard" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Dashboard</NavLink>
+                {/* Link to the DAO browser page */}
+                <NavLink to="/daos" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>DAOs</NavLink>
                 <NavLink to="/deploy" className={({ isActive }) => isActive ? "nav-link active" : "nav-link"}>Deploy DAO</NavLink>
-                {/* Removed Staking and Voting links */}
+                {/* Removed Dashboard/Staking/Voting links */}
             </div>
             <div className="navbar-right">
                 {isConnected ? (
