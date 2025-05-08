@@ -45,7 +45,6 @@ The project serves as both a practical tool for communities looking to implement
     * **Language:** Solidity
     * **Standards:** ERC20 (for Governance Token)
     * **Libraries:** OpenZeppelin Contracts (for `ERC20`, `Ownable`, `ReentrancyGuard`)
-    * **Development Environment:** (Assumed Hardhat or Truffle - *specify if known*)
 * **Frontend:**
     * **Library/Framework:** React.js
     * **Routing:** React Router (`react-router-dom`)
