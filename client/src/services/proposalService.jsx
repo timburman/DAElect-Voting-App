@@ -71,7 +71,7 @@ export const saveDaoInstance = async (daoData) => {
             name: savedData.name,
             token: savedData.token_address,
             staking: savedData.staking_address,
-            voting: savedData.staking_address
+            voting: savedData.voting_address
         };
     } catch (error) {
         console.error("Error saving DAO instance:", error);

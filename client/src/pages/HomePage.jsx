@@ -84,7 +84,7 @@ const HomePage = () => {
                         <div className="step-number">2</div>
                          <FiGitBranch size={30} className="step-icon"/>
                         <h3>Select / Deploy</h3>
-                        <p>Choose an existing DAO instance from 'My DAOs' or deploy your own using the 'Deploy' page.</p>
+                        <p>Choose an existing DAO instance from 'DAOs' or deploy your own using the 'Deploy' page.</p>
                     </div>
                     <div className="step-card">
                         <div className="step-number">3</div>
