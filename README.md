@@ -4,6 +4,8 @@
 
 The project serves as both a practical tool for communities looking to implement decentralized governance and a comprehensive boilerplate for developers venturing into Web3 and DAO development.
 
+**Contracts**: [text](https://github.com/timburman/DAO-Voting-Contract)
+
 ### Core Objectives:
 
 * **Decentralized Governance:** To provide a transparent and immutable system for community members to participate in decision-making processes.
