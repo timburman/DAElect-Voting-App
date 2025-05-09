@@ -121,6 +121,7 @@ const DedicatedDaoPage = () => {
                     setNewProposalDesc('');
                     setLoading(false);
                     setLoading(true, 'Proposal Created!', 2000);
+                    setLoading(false);
                 })
                 .on('error', (err) => { setError(`Create failed: ${err.message}`); setLoading(false); });
         } catch (err) { setError(`Tx error: ${err.message}`); setLoading(false); }
