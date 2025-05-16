@@ -8,7 +8,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 const ProposalDetailPage = () => {
     const { proposalId } = useParams();
     const navigate = useNavigate();
-    const { web3, account, votingContract, isConnected, networkId, targetNetworkId, setLoading, setError, clearError, isOwner, currentDaoAddresses, getSignature, votingOwner } = useWeb3Context(); // Added isOwner
+    const { web3, account, votingContract, isConnected, networkId, targetNetworkId, setLoading, setError, clearError, isOwner, currentDaoAddresses, getSignature, votingOwner, stakingContract, tokenContract } = useWeb3Context(); // Added isOwner
 
     const [proposalData, setProposalData] = useState(null); // Blockchain data
     const [detailsText, setDetailsText] = useState(''); // Off-chain data
@@ -21,6 +21,9 @@ const ProposalDetailPage = () => {
     const [isEditingDetails, setIsEditingDetails] = useState(false);
     const [editedDetails, setEditedDetails] = useState('');
     const [userVoteInfo, setUserVoteInfo] = useState({ hasVoted: false, choice: null });
+    const [votingPower, setVotingPower] = useState('0');
+    const [tokenSymbol, setTokenSymbol] = useState('');
+    const [totalStakedCurrently, setTotalStakedCurrently] = useState('0');
 
     const proposalStateMap = { 0: 'Pending', 1: 'Active', 2: 'Canceled', 3: 'Defeated', 4: 'Succeeded' };
     const voteTypeMap = { 0: 'Against', 1: 'For', 2: 'Abstain' };
@@ -33,11 +36,16 @@ const ProposalDetailPage = () => {
 
     // Fetch Blockchain Data
     const fetchBlockchainData = useCallback(async () => {
-        if (!votingContract || !proposalId) return;
+        if (!votingContract || !proposalId || !stakingContract || !tokenContract) return;
         setIsLoadingBc(true);
         setPageError('');
         try {
             const data = await votingContract.methods.getProposal(proposalId).call();
+            const power = await stakingContract.methods.stakedBalance(account).call();
+            const tStakedCurrently = await stakingContract.methods.totalStaked().call();
+            const symbol = await tokenContract.methods.symbol().call();
+            
+            
             // Fetch user vote status as well
             let voteInfo = { hasVoted: false, choice: null };
             if(account) {
@@ -64,6 +72,9 @@ const ProposalDetailPage = () => {
                 stateText: proposalStateMap[data.state.toString()] || 'Unknown'
             });
             setUserVoteInfo(voteInfo);
+            setVotingPower(power?.toString() ?? '0');
+            setTokenSymbol(symbol?.toString() ?? `${tokenSymbol}`);
+            setTotalStakedCurrently(tStakedCurrently?.toString() ?? `0`);
 
         } catch (err) {
             console.error("Error fetching blockchain proposal data:", err);
@@ -254,20 +265,22 @@ const ProposalDetailPage = () => {
                  <h3>Details</h3>
                  <p><strong>Proposer:</strong> {proposalData.proposer}</p>
                  <p><strong>Voting Period:</strong> {formatTimestamp(proposalData.startTime)} - {formatTimestamp(proposalData.endTime)}</p>
-                 <p><strong>Snapshot Total Staked:</strong> {fromWei(proposalData.snapshotTotalStaked)}</p>
+                 <p><strong>Total Staked:</strong> {fromWei(totalStakedCurrently)} {tokenSymbol}</p>
+                 
              </div>
 
 
             {/* Voting or Results Section */}
             {proposalData.state === '1' && !proposalData.canceled && ( // Active
-                <div className="voting-section">
+                <div className="voting-section" style={{ marginTop: '1rem' }}>
                     <h3>Voting</h3>
                     {userVoteInfo.hasVoted ? (
                         <p><strong>Your vote: {voteTypeMap[userVoteInfo.choice] || 'Unknown'}</strong></p>
                     ) : (
                          Date.now() / 1000 < parseInt(proposalData.endTime) ? (
                             <div className="vote-options">
-                                <p>Cast your vote:</p>
+                                <p><strong>Cast your vote:</strong></p>
+                                <p><strong>Voting Power:</strong> {fromWei(votingPower)} {tokenSymbol}</p>
                                 <button onClick={() => handleVote(1)} disabled={isVoting}>Vote For</button>
                                 <button onClick={() => handleVote(0)} disabled={isVoting}>Vote Against</button>
                                 <button onClick={() => handleVote(2)} disabled={isVoting}>Abstain</button>
@@ -278,9 +291,12 @@ const ProposalDetailPage = () => {
                     )}
                      {/* Display current counts while active */}
                     <p style={{ marginTop: '1rem' }}>
-                        Current Votes: For: {fromWei(proposalData.forVotes)}, Against: {fromWei(proposalData.againstVotes)}, Abstain: {fromWei(proposalData.abstainVotes)}
+                        <strong> Current Votes:</strong>
                     </p>
-                    <p>Total Power Voted: {fromWei(proposalData.totalVotesParticipated)}</p>
+                    <p ><strong>For:</strong> {fromWei(proposalData.forVotes)} {tokenSymbol}</p>
+                    <p ><strong>Against:</strong> {fromWei(proposalData.againstVotes)} {tokenSymbol}</p>
+                    <p ><strong>Abstain:</strong> {fromWei(proposalData.abstainVotes)} {tokenSymbol}</p>
+                    <p style={{ marginTop: '1rem' }}><strong>Total Power Voted:</strong> {fromWei(proposalData.totalVotesParticipated)} {tokenSymbol}</p>
                      {canBeFinished && (
                          <button onClick={handleFinishProposal} disabled={isFinishing} style={{ marginTop: '1rem' }}>
                             {isFinishing ? 'Processing...' : 'Finalize Proposal Results'}
