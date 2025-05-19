@@ -2,7 +2,6 @@
 
 **DAElect** is a full-stack decentralized application (DApp) designed to provide a robust and user-friendly platform for DAO (Decentralized Autonomous Organization) governance. It empowers communities by enabling token staking to acquire voting power and facilitating on-chain proposal creation and voting. The platform also offers a user-friendly interface for deploying new, customized DAO instances.
 
-The project serves as both a practical tool for communities looking to implement decentralized governance and a comprehensive boilerplate for developers venturing into Web3 and DAO development.
 
 **Contracts**: [DAElect Contracts](https://github.com/timburman/DAO-Voting-Contract)
 
