@@ -79,3 +79,4 @@ DAElect aims to provide a comprehensive yet accessible solution for communities 
 ![alt](./SS/DAO_Proposal_Staking.png)
 * **Proposal Voting:**
 ![alt](./SS/Proposal_Voting.png)
+.
