@@ -61,3 +61,21 @@
 * **Wallet Interaction:** MetaMask or any browser wallet supporting the `window.ethereum` provider.
 
 DAElect aims to provide a comprehensive yet accessible solution for communities looking to embrace decentralized governance and for developers seeking a solid foundation to build upon.
+
+### Sneak Peek:
+* **Home:**
+![alt](./SS/Home.png)
+* **DAOs:**
+![alt](./SS/DAOs.png)
+* **Token Deployment:**
+![alt](./SS/Token%20Deployment.png)
+* **Token Verification:**
+![alt](./SS/Token_Verification.png)
+* **Deploy Staking:**
+![alt](./SS/Deploy_Staking.png)
+* **Deploy Voting:**
+![alt](./SS/Deploy_Voting.png)
+* **DAO Proposal Staking:**
+![alt](./SS/DAO_Proposal_Staking.png)
+* **Proposal Voting:**
+![alt](./SS/Proposal_Voting.png)
