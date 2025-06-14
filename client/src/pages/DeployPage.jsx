@@ -5,6 +5,7 @@ import { contractArtifacts } from "../config/contracts";
 import { saveDaoInstance } from "../services/proposalService";
 import MessageDisplay from "../components/MessageDisplay";
 import LoadingSpinner from "../components/LoadingSpinner";
+import ProgressBar from "../components/ProgressBar";
 
 const parseVotingPeriod = (input) => {
     if (!input || typeof input !== 'string') return null;
