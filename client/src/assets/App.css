@@ -723,84 +723,112 @@ Add button.edit-btn { background: none; border: none; color: var(--primary-color
 /* Button styles already defined via .hero-cta selector */
 
 /* --- Progress Bar Styles --- */
+/* --- Progress Bar Styles (Definitive Centering Fix) --- */
 .progress-bar-container {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start; /* Align items to the top for labels */
+    align-items: flex-start; /* Aligns wrappers to the top */
     width: 100%;
     margin-bottom: 2rem;
+    padding: 0 15px; /* Padding to prevent edges touching screen */
 }
 
 .progress-step-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: relative;
+    position: relative; /* Crucial for positioning the connector line */
+    flex-grow: 1; /* Allow wrappers to grow and space themselves out */
 }
+/* This pseudo-element creates the connector line */
+.progress-step-wrapper:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 20px; /* Vertically center with the circle (half of 40px height) */
+    left: 50%;
+    transform: translateY(-50%);
+    height: 4px;
+    width: 100%;
+    background-color: #e0e0e0;
+    z-index: 1; /* Place it behind the circle */
+}
+/* Color the connector line when the step it originates from is completed */
+.progress-step-wrapper .completed + .progress-connector-active::after {
+    background-color: var(--primary-color);
+}
+.progress-step-wrapper.completed::after {
+    background-color: var(--primary-color);
+}
+
 
 .progress-step {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #e0e0e0; /* Default color */
+    background-color: #e0e0e0;
     border: 3px solid #e0e0e0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    color: white;
     transition: all 0.3s ease;
+    font-weight: bold;
+    position: relative; /* Establish a positioning context for the number/icon */
+    z-index: 2; /* Ensure the circle is on top of the connector line */
+    background-clip: padding-box; /* Ensures background doesn't bleed under border */
 }
-.progress-step .step-number { color: #888; }
+
+/* --- FIX FOR CENTERING THE NUMBER/ICON --- */
+.progress-step .step-number,
+.progress-step svg /* Target the react-icon SVG directly */
+ {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* The absolute centering technique */
+    line-height: 1;
+}
+.progress-step .step-number {
+    color: #888;
+    font-size: 16px; /* Absolute size to prevent overflow */
+}
+.progress-step svg {
+    font-size: 20px; /* Explicit size for the checkmark icon */
+}
+
 
 .progress-step.active {
     background-color: white;
     border-color: var(--primary-color);
+    transform: scale(1.1);
 }
-.progress-step.active .step-number { color: var(--primary-color); }
-
+.progress-step.active .step-number {
+    color: var(--primary-color);
+}
 
 .progress-step.completed {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
-    color: white;
+    color: white; /* Color for the checkmark icon */
     cursor: pointer;
 }
- .progress-step.completed:hover {
+.progress-step.completed:hover {
     transform: scale(1.1);
- }
-
+}
 
 .step-label {
-    margin-top: 0.5rem;
+    margin-top: 0.75rem;
     font-size: 0.85em;
     color: #888;
     font-weight: 500;
-     text-align: center;
+    text-align: center;
+    width: 100%;
 }
 .step-label.active {
     color: var(--primary-color);
     font-weight: bold;
 }
 
-.progress-connector {
-    flex-grow: 1;
-    height: 4px;
-    background-color: #e0e0e0;
-    /* Positioned between the step centers */
-    position: relative;
-    top: 20px; /* Half of step height */
-    margin: 0 -10px; /* Adjust margin to connect nicely */
-    transition: background-color 0.3s ease;
-}
-.progress-connector.completed {
-    background-color: var(--primary-color);
-}
-
-
 /* --- Deploy Wizard Styles --- */
 .deploy-page {
     max-width: 800px; /* Constrain wizard width */
+    margin-left: auto; /* Center the container horizontally */
+    margin-right: auto;
 }
 
 .deploy-wizard-content {

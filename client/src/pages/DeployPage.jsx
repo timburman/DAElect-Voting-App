@@ -57,7 +57,7 @@ const DeployPage = () => {
     const [config, setConfig] = useState({
         tokenChoice: null,
         tokenName: 'DAO Token',
-        tokenSymbol: 'MDT',
+        tokenSymbol: 'DAOT',
         initialSupply: '1000000',
         existingTokenAddress: '',
         governanceTokenAddress: '',
@@ -306,9 +306,9 @@ const DeployPage = () => {
                              <button onClick={() => setConfig(p => ({...p, tokenChoice: 'existing'}))} className={config.tokenChoice==='existing'?'active':''}>Use Existing Token</button>
                          </div>
                          {config.tokenChoice === 'create' && <div className="deploy-form">
-                             <input type="text" name="tokenName" placeholder="Token Name" value={config.tokenName} onChange={handleConfigChange} />
-                             <input type="text" name="tokenSymbol" placeholder="Token Symbol" value={config.tokenSymbol} onChange={handleConfigChange} />
-                             <input type="number" name="initialSupply" placeholder="Initial Supply" value={config.initialSupply} onChange={handleConfigChange} />
+                             <input type="text" name="tokenName" placeholder="Token Name - eg.,DAO Token" onChange={handleConfigChange} />
+                             <input type="text" name="tokenSymbol" placeholder="Token Symbol - eg., DAT" onChange={handleConfigChange} />
+                             <input type="number" name="initialSupply" placeholder="Initial Supply - eg., 1000000" onChange={handleConfigChange} />
                          </div>}
                          {config.tokenChoice === 'existing' && <div className="deploy-form">
                              <input type="text" name="existingTokenAddress" placeholder="Enter Token Contract Address" value={config.existingTokenAddress} onChange={handleConfigChange} />
