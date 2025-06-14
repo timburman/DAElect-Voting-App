@@ -46,6 +46,8 @@ const parseQuorum = (input) => {
 
 };
 
+const DEPLOYMENT_STEPS = ["Token Setup", "Staking Config", "Voting Config", "Deploy & Save"];
+
 const DeployPage = () => {
 
     const { web3, account, isConnected, networkId, targetNetworkId, setLoading, setError, clearError, switchDao, saveDaoConfig, addAndSelectDao, getSignature } = useWeb3Context();
