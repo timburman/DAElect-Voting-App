@@ -60,12 +60,14 @@ const DeployPage = () => {
         tokenSymbol: 'DAOT',
         initialSupply: '1000000',
         existingTokenAddress: '',
+        verifiedTokenDetails: null,
+
         governanceTokenAddress: '',
         stakingContractAddress: '',
+
         votingContractAddress: '',
         votingPeriod: '3 days',
         quorum: '4%',
-
         daoName: '',
     });
 
@@ -103,6 +105,19 @@ const DeployPage = () => {
     const handleConfigChange = (e) => {
         setConfig(prev => ({...prev, [e.target.name]: e.target.value}));
     };
+
+    const handleTokenChoiceChange = () => {
+
+        setConfig(prev => ({
+            ...prev,
+            tokenChoice: choice,
+            verifiedTokenDetails: null,
+            governanceTokenAddress: '',
+            stakingContractAddress: '',
+            votingContractAddress: '',
+        }));
+
+    }
 
     const goToStep = (step) => {
         if (step < currentStep) {
@@ -341,13 +356,50 @@ const DeployPage = () => {
                 const isReadyToSave = config.governanceTokenAddress && config.stakingContractAddress && config.votingContractAddress;
                  return (
                     <div className="deploy-step-content">
-                         <h3>Step 4: Deploy Contracts & Finalize</h3>
-                         <p>Review your configuration and deploy each contract one by one.</p>
+                         <h3>Step 4: Review Configuration & Deploy</h3>
+
+                         {/* --- NEW SUMMARY SECTION --- */}
+                         <div className="config-review-summary">
+                             <h4>Please review your configuration before deploying.</h4>
+                             <div className="summary-item">
+                                 <h5>Governance Token</h5>
+                                 {config.tokenChoice === 'create' ? (
+                                     <ul>
+                                         <li><strong>Action:</strong> Create New Token</li>
+                                         <li><strong>Name:</strong> {config.tokenName}</li>
+                                         <li><strong>Symbol:</strong> {config.tokenSymbol}</li>
+                                         <li><strong>Initial Supply:</strong> {new Intl.NumberFormat().format(config.initialSupply)}</li>
+                                     </ul>
+                                 ) : (
+                                     <ul>
+                                         <li><strong>Action:</strong> Use Existing Token</li>
+                                         <li><strong>Address:</strong> <code>{config.existingTokenAddress}</code></li>
+                                     </ul>
+                                 )}
+                             </div>
+                             <div className="summary-item">
+                                 <h5>Staking Contract</h5>
+                                 <ul>
+                                     <li>This contract will be linked to the Governance Token specified above.</li>
+                                     {/* Placeholder for future staking config details */}
+                                 </ul>
+                             </div>
+                             <div className="summary-item">
+                                 <h5>Voting Contract</h5>
+                                 <ul>
+                                     <li><strong>Voting Period:</strong> {config.votingPeriod}</li>
+                                     <li><strong>Quorum:</strong> {config.quorum}</li>
+                                 </ul>
+                             </div>
+                         </div>
+                         {/* --- END OF NEW SUMMARY SECTION --- */}
+
+                         <p className="deploy-actions-title">Deploy each contract one by one. Buttons will enable as prerequisites are met.</p>
                          <ul className="deploy-summary-list">
                              <li>
                                  <strong>Token:</strong>
                                  {config.governanceTokenAddress
-                                     ? <code className="address-display">{config.governanceTokenAddress}</code>
+                                     ? <code className="address-display success">{config.governanceTokenAddress}</code>
                                      : <button onClick={config.tokenChoice === 'create' ? handleDeployToken : handleVerifyAndSetToken} disabled={isDeploying.token}>
                                         {isDeploying.token ? 'Processing...' : (config.tokenChoice === 'create' ? 'Deploy Token' : 'Verify & Set Token')}
                                        </button>}
@@ -355,7 +407,7 @@ const DeployPage = () => {
                              <li>
                                  <strong>Staking Contract:</strong>
                                   {config.stakingContractAddress
-                                     ? <code className="address-display">{config.stakingContractAddress}</code>
+                                     ? <code className="address-display success">{config.stakingContractAddress}</code>
                                      : <button onClick={handleDeployStaking} disabled={isDeploying.staking || !config.governanceTokenAddress}>
                                          {isDeploying.staking ? 'Deploying...' : 'Deploy Staking'}
                                        </button>}
@@ -363,7 +415,7 @@ const DeployPage = () => {
                               <li>
                                  <strong>Voting Contract:</strong>
                                    {config.votingContractAddress
-                                     ? <code className="address-display">{config.votingContractAddress}</code>
+                                     ? <code className="address-display success">{config.votingContractAddress}</code>
                                      : <button onClick={handleDeployVoting} disabled={isDeploying.voting || !config.stakingContractAddress}>
                                          {isDeploying.voting ? 'Deploying...' : 'Deploy Voting'}
                                        </button>}

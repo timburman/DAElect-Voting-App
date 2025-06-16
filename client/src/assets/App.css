@@ -901,3 +901,68 @@ Add button.edit-btn { background: none; border: none; color: var(--primary-color
     border-top: 2px solid var(--primary-color);
 }
 .finalize-section h4 { color: var(--primary-color); }
+
+/* --- Styles for Deploy Page Step 4 Summary --- */
+
+.config-review-summary {
+    background-color: var(--accent-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.config-review-summary h4 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.8rem;
+}
+
+.summary-item {
+    margin-bottom: 1rem;
+}
+
+.summary-item h5 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1em;
+    color: var(--text-color);
+}
+
+.summary-item ul {
+    list-style: none;
+    padding-left: 1rem;
+    margin: 0;
+}
+
+.summary-item ul li {
+    font-size: 0.9em;
+    color: var(--text-light);
+    margin-bottom: 0.4rem;
+}
+
+.summary-item ul li strong {
+    color: var(--text-color);
+    margin-right: 0.5rem;
+}
+
+.summary-item code {
+    background-color: rgba(0, 0, 0, 0.05);
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.95em;
+}
+
+.deploy-actions-title {
+    text-align: center;
+    font-style: italic;
+    color: var(--text-light);
+    margin-top: 2rem;
+}
+
+.address-display.success {
+    background-color: #d4edda; /* Greenish success color */
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
