@@ -2,6 +2,7 @@ import React from "react";
 import {NavLink} from 'react-router-dom';
 import { useWeb3Context } from "../contexts/Web3Context";
 import ConnectButton from "./ConnectButton";
+import logo from '../assets/Logo_1_no_background.png';
 
 const Navbar = () => {
     const { account, isConnected } = useWeb3Context();
@@ -14,7 +15,10 @@ const Navbar = () => {
     return (
         <nav className="navbar">
             <div className="navbar-left">
-                <NavLink to="/" className="navbar-brand">DAElect</NavLink>
+                <NavLink to="/" className="navbar-brand">
+                    <img src={logo} alt="DAElect logo" className="navbar-logo"/>
+                    <span>DAElect</span>
+                </NavLink>
             </div>
             <div className="navbar-middle">
                 {/* Updated Links */}

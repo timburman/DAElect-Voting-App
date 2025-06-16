@@ -91,6 +91,45 @@
     font-size: 0.9em;
     color: white;
   }
+
+  /* --- Logo Integration Styles --- */
+
+/* Styles for the logo in the Navbar */
+.navbar-logo {
+  height: 45px;
+  width: 45px;
+  /* The logo is already circular, but this ensures it if the image isn't perfectly cropped */
+  transition: transform 0.3s ease;
+}
+
+/* Add a subtle hover effect */
+.navbar-brand:hover .navbar-logo {
+  transform: rotate(10deg) scale(1.05);
+}
+
+/* Ensure the text next to the logo is vertically centered */
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Styles for the logo on the HomePage Hero Section */
+.hero-logo {
+    width: 150px;
+    height: 150px;
+    margin: 0; /* Remove the old margin property */
+}
+
+/* Container for the logo and title on the homepage */
+.hero-title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem; /* Adjust the space between logo and text */
+    margin-bottom: 1.5rem; /* Space below the title group */
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+}
   
   /* Connect Button Styles */
   .connect-button {
@@ -476,7 +515,8 @@ Add button.edit-btn { background: none; border: none; color: var(--primary-color
 
 .hero-title {
     font-size: clamp(2.5rem, 6vw, 3.8rem); /* Responsive font size */
-    font-weight: 700; /* Bolder */
+    font-weight: bold; /* Bolder */
+    margin: 0;
     margin-bottom: 1rem;
     letter-spacing: -0.5px;
     color: #ffffff;

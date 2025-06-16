@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useWeb3Context } from '../contexts/Web3Context';
 import { FiLock, FiCheckSquare, FiLayers, FiFileText, FiNavigation, FiGitBranch, FiThumbsUp, FiPenTool } from 'react-icons/fi';
 import ConnectButton from '../components/ConnectButton';
+import logo from "../assets/Logo_1_no_background.png";
 
 const HomePage = () => {
 
@@ -16,8 +17,10 @@ const HomePage = () => {
             {/* Hero Section */}
             <section className="hero-section">
                 <div className="hero-content">
-                    <span className="hero-icon-brand"><img src="../assets/DAElect_logo.jpeg" alt="" /></span> {/* Simple Emoji Icon */}
-                    <h1 className="hero-title">DAElect</h1>
+                    <div className="hero-title-container">
+                        <img src={logo} alt="DAElect Logo" className="hero-logo" />
+                        <h1 className="hero-title">DAElect</h1>
+                    </div>
                     <p className="hero-subtitle">
                         Empowering Communities Through Decentralized Governance.
                         <br />
