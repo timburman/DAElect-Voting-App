@@ -33,7 +33,6 @@ export const Web3Provider = ({children}) => {
     const [votingOwner, setVotingOwner] = useState('');
     const [isOwner, setIsOwner] = useState(false);
 
-
     const clearError = useCallback(() => setError(''), []);
     const setLoading = useCallback((loading, message = '') => setIsLoading(loading ? message || true : false), []);
 
@@ -157,6 +156,25 @@ export const Web3Provider = ({children}) => {
                 const accounts = await window.ethereum.request({method: "eth_requestAccounts"});
                 if (accounts.length > 0) {
                     const currentAccount = accounts[0];
+
+                    const message = `
+                    Welcome to DAElect!
+                    Click to sign in and verify ownership of your wallet.
+
+                    This request will not trigger a blockchain transaction or cost any gas fees.
+                    Wallet Address: ${currentAccount}
+
+                    By signing this message, you confirm you are the owner of this wallet.
+                    Only sign this message with a trusted site.
+                    `
+                    const verified = await getSignature(message, currentAccount, web3Instance);
+
+                    if (!verified) {
+                        setAccount(null);
+                        setIsConnected(false);
+                        return;
+                    }
+
                     setAccount(currentAccount);
                     setIsConnected(true);
 
@@ -174,6 +192,7 @@ export const Web3Provider = ({children}) => {
                         // setTokenContractInstance(token);
                         // setStakingContractInstance(staking);
                         // setVotingContractInstance(voting);
+
                         
                         console.log("Wallet Connected: ",currentAccount);
                     }
@@ -242,12 +261,33 @@ export const Web3Provider = ({children}) => {
     }, [web3, account, networkId, targetNetworkId, currentDaoAddresses]);
 
     useEffect(() => {
-        const handleAccountsChanged = (accounts) => {
+        const handleAccountsChanged = async (accounts) => {
             console.log("Accounts Changed", accounts);
 
             if (accounts.length > 0 && accounts[0] !== account) {
+
+                const message = `
+                Welcome to DAElect!
+                Click to sign in and verify ownership of your wallet.
+
+                This request will not trigger a blockchain transaction or cost any gas fees.
+                Wallet Address: ${accounts[0]}
+
+                By signing this message, you confirm you are the owner of this wallet.
+                Only sign this message with a trusted site.
+                `
+
+                const verified = await getSignature(message, accounts[0]);
+
+                if (!verified) {
+                    setAccount(null);
+                    setIsConnected(false);
+                    return;
+                }
+
                 setAccount(accounts[0]);
                 setIsConnected(true);
+
             } else if (accounts.length === 0) {
                 setAccount(null);
                 setIsConnected(false);
@@ -299,10 +339,12 @@ export const Web3Provider = ({children}) => {
         fetchOwner();
     }, [votingContractInstance, account]);
 
-    const getSignature = async (message, account_verification = account) => {
-        const signedMessage = await web3.eth.personal.sign(message, account_verification, '');
+    const getSignature = async (message, account_verification = account, web3InstanceTemp = web3) => {
+        const signedMessage = await web3InstanceTemp.eth.personal.sign(message, account_verification, '');
 
-        const verifySig = await web3.eth.personal.ecRecover(message, signedMessage);
+        const verifySig = await web3InstanceTemp.eth.personal.ecRecover(message, signedMessage);
+
+        if (!signedMessage) return false;
 
         return account_verification.toLowerCase() === verifySig.toLowerCase();
     }
