@@ -106,7 +106,7 @@ const DeployPage = () => {
         setConfig(prev => ({...prev, [e.target.name]: e.target.value}));
     };
 
-    const handleTokenChoiceChange = () => {
+    const handleTokenChoiceChange = (choice) => {
 
         setConfig(prev => ({
             ...prev,
@@ -117,7 +117,7 @@ const DeployPage = () => {
             votingContractAddress: '',
         }));
 
-    }
+    };
 
     const goToStep = (step) => {
         if (step < currentStep) {
@@ -209,17 +209,20 @@ const DeployPage = () => {
 
         if (!web3 || !account) { setPageError("Wallet not connected."); return; }
 
-        
+        setIsDeploying(prev => ({...prev, token: true}));
         setLoading(true, 'Verifying Token...');
         
         try {
-            const tempToken = new web3.eth.Contract(contractArtifacts.token.abi, config.existingTokenAddress);
+            const enteredAddress = config.existingTokenAddress.trim();
+            const tempToken = new web3.eth.Contract(contractArtifacts.token.abi, enteredAddress);
 
 
-            const [name, symbol, owner] = await Promise.all([
+            const [name, symbol, owner, totalSupply, decimals] = await Promise.all([
                 tempToken.methods.name().call(),
                 tempToken.methods.symbol().call(),
                 tempToken.methods.owner().call(),
+                tempToken.methods.totalSupply().call(),
+                tempToken.methods.decimals().call()
             ]);
 
             const ownerMatches = owner.toLowerCase() === account.toLowerCase();
@@ -234,12 +237,19 @@ const DeployPage = () => {
                 return;
             }
 
-            
             console.log("Token Verified:", { name, symbol, decimals: '18', address: config.existingTokenAddress });
-            setConfig(prev => ({...prev,
-                governanceTokenAddress: config.existingTokenAddress,
-                tokenName: name,
-                tokenSymbol: symbol
+
+            const decimalInt = parseInt(decimals.toString(), 10);
+            const formatedTotalSupply = Number(web3.utils.fromWei(totalSupply.toString(), decimalInt >= 18 ? 'ether':'gwei')).toLocaleString();
+
+            setConfig(prev => ({
+                ...prev,
+                governanceTokenAddress: enteredAddress,
+                verifiedTokenDetails: {
+                    name,
+                    symbol,
+                    totalSupply: formatedTotalSupply
+                }
             }));
             
             
@@ -317,8 +327,8 @@ const DeployPage = () => {
                     <div className="deploy-step-content">
                          <h3>Step 1: Configure Your Governance Token</h3>
                          <div className="token-choice-buttons">
-                             <button onClick={() => setConfig(p => ({...p, tokenChoice: 'create'}))} className={config.tokenChoice==='create'?'active':''}>Create New Token</button>
-                             <button onClick={() => setConfig(p => ({...p, tokenChoice: 'existing'}))} className={config.tokenChoice==='existing'?'active':''}>Use Existing Token</button>
+                            <button onClick={() => handleTokenChoiceChange('create')} className={config.tokenChoice==='create'?'active':''}>Create New Token</button>
+                            <button onClick={() => handleTokenChoiceChange('existing')} className={config.tokenChoice==='existing'?'active':''}>Use Existing Token</button>
                          </div>
                          {config.tokenChoice === 'create' && <div className="deploy-form">
                              <input type="text" name="tokenName" placeholder="Token Name - eg.,DAO Token" onChange={handleConfigChange} />
@@ -371,16 +381,25 @@ const DeployPage = () => {
                                          <li><strong>Initial Supply:</strong> {new Intl.NumberFormat().format(config.initialSupply)}</li>
                                      </ul>
                                  ) : (
+                                    config.verifiedTokenDetails ? (
                                      <ul>
-                                         <li><strong>Action:</strong> Use Existing Token</li>
-                                         <li><strong>Address:</strong> <code>{config.existingTokenAddress}</code></li>
-                                     </ul>
-                                 )}
+                                        <li><strong>Name:</strong> {config.verifiedTokenDetails.name}</li>
+                                        <li><strong>Symbol:</strong> {config.verifiedTokenDetails.symbol}</li>
+                                        <li><strong>Total Supply:</strong> {config.verifiedTokenDetails.totalSupply}</li>
+                                        <li><strong>Address:</strong> <code>{config.existingTokenAddress}</code></li>
+                                    </ul>
+                                 ) : (
+                                    <ul>
+                                        <li><strong>Action:</strong> Use Existing Token</li>
+                                        <li><strong>Address:</strong> <code>{config.existingTokenAddress}</code></li>
+                                    </ul>
+                                 )
+                                )}
                              </div>
                              <div className="summary-item">
                                  <h5>Staking Contract</h5>
                                  <ul>
-                                     <li>This contract will be linked to the Governance Token specified above.</li>
+                                     <li>This contract will be linked to the Governance Token above.</li>
                                      {/* Placeholder for future staking config details */}
                                  </ul>
                              </div>
@@ -423,7 +442,7 @@ const DeployPage = () => {
                          </ul>
                          {isReadyToSave && <div className="deploy-form finalize-section">
                              <h4>Finalize DAO Setup</h4>
-                             <input type="text" name="daoName" placeholder="Enter a Name for this DAO" value={config.daoName} onChange={handleConfigChange} />
+                             <input type="text" name="daoName" placeholder="Enter a Name for your DAO" value={config.daoName} onChange={handleConfigChange} />
                              <button onClick={handleSaveDAO} disabled={!config.daoName.trim()}>Save DAO Instance</button>
                          </div>}
                     </div>
