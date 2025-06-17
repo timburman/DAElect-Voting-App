@@ -157,17 +157,7 @@ export const Web3Provider = ({children}) => {
                 if (accounts.length > 0) {
                     const currentAccount = accounts[0];
 
-                    const message = `
-                    Welcome to DAElect!
-                    Click to sign in and verify ownership of your wallet.
-
-                    This request will not trigger a blockchain transaction or cost any gas fees.
-                    Wallet Address: ${currentAccount}
-
-                    By signing this message, you confirm you are the owner of this wallet.
-                    Only sign this message with a trusted site.
-                    `
-                    const verified = await getSignature(message, currentAccount, web3Instance);
+                    const verified = await getSignature(generateWelcomeSignatureMessage(currentAccount), currentAccount, web3Instance);
 
                     if (!verified) {
                         setAccount(null);
@@ -266,18 +256,7 @@ export const Web3Provider = ({children}) => {
 
             if (accounts.length > 0 && accounts[0] !== account) {
 
-                const message = `
-                Welcome to DAElect!
-                Click to sign in and verify ownership of your wallet.
-
-                This request will not trigger a blockchain transaction or cost any gas fees.
-                Wallet Address: ${accounts[0]}
-
-                By signing this message, you confirm you are the owner of this wallet.
-                Only sign this message with a trusted site.
-                `
-
-                const verified = await getSignature(message, accounts[0]);
+                const verified = await getSignature(generateWelcomeSignatureMessage(accounts[0]), accounts[0]);
 
                 if (!verified) {
                     setAccount(null);
@@ -344,9 +323,15 @@ export const Web3Provider = ({children}) => {
 
         const verifySig = await web3InstanceTemp.eth.personal.ecRecover(message, signedMessage);
 
-        if (!signedMessage) return false;
 
         return account_verification.toLowerCase() === verifySig.toLowerCase();
+    }
+
+    const generateWelcomeSignatureMessage = (insertion_address) => {
+
+        return `
+                        Welcome to DAElect!\nClick to sign in and verify ownership of your wallet.\n\nThis request will not trigger a blockchain transaction or cost any gas fees.\nWallet Address: ${insertion_address}\n\nBy signing this message, you confirm you are the owner of this wallet.\nOnly sign this message with a trusted site.`;
+
     }
 
     const value = {
